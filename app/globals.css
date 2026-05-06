@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #07101e;
+  --color-bg-soft: #0e1c33;
+  --color-card: #142544;
+  --color-accent: #ff7a45;
+  --color-accent-soft: #ffd6c4;
+  --color-rune: #5cd0ff;
+  --color-rune-soft: #b8e8ff;
+  --color-victory: #ffd166;
+  --color-text: #f4f4f7;
+  --color-text-muted: #a3afc6;
+  --font-display:
+    ui-sans-serif, system-ui, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family:
+    ui-sans-serif, system-ui, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(255, 122, 69, 0.12), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(92, 208, 255, 0.10), transparent 55%);
+  z-index: -1;
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 69, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(255, 122, 69, 0);
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
