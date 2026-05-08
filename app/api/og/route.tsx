@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
-import { DISTANCE_SHORT_JA, metersOf } from "@/lib/distance";
+import { metersOf } from "@/lib/distance";
 import { decodeInput } from "@/lib/encoding";
+import { getDict, interpolate } from "@/lib/i18n/dictionary";
+import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n/locales";
 import { consensusSeconds, nextSubTargetGap, predictAll } from "@/lib/predict";
 import { formatSignedDelta, formatTime } from "@/lib/time";
 
@@ -9,6 +11,10 @@ export const runtime = "edge";
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const hash = searchParams.get("hash") ?? "";
+  const langRaw = searchParams.get("lang");
+  const locale = langRaw && isLocale(langRaw) ? langRaw : DEFAULT_LOCALE;
+  const t = getDict(locale);
+
   const decoded = decodeInput(hash);
   if (!decoded) return new Response("invalid hash", { status: 400 });
 
@@ -17,8 +23,15 @@ export async function GET(request: Request): Promise<Response> {
   const preds = predictAll(fromMeters, decoded.fromTimeSec, toMeters);
   const consensus = consensusSeconds(preds);
   const sub = nextSubTargetGap(consensus, toMeters);
-  const fromShort = DISTANCE_SHORT_JA[decoded.fromKey];
-  const toShort = DISTANCE_SHORT_JA[decoded.toKey];
+  const fromShort = t.distances[decoded.fromKey];
+  const toShort = t.distances[decoded.toKey];
+
+  const subLabel = sub ? t.subTargets[sub.target.key as keyof typeof t.subTargets] : null;
+  const subText = sub
+    ? interpolate(sub.achieved ? t.subTargets.inReach : t.subTargets.awayBy, {
+        delta: formatSignedDelta(sub.gapSec),
+      })
+    : "";
 
   return new ImageResponse(
     <div
@@ -34,15 +47,8 @@ export async function GET(request: Request): Promise<Response> {
         position: "relative",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          fontSize: 26,
-          color: "#a3afc6",
-          letterSpacing: 2,
-        }}
-      >
-        🏃 マラソンタイム予測
+      <div style={{ display: "flex", fontSize: 26, color: "#a3afc6", letterSpacing: 2 }}>
+        🏃 {t.meta.siteName}
       </div>
 
       <div
@@ -55,15 +61,15 @@ export async function GET(request: Request): Promise<Response> {
         }}
       >
         <div style={{ display: "flex", fontSize: 32, color: "#ffd6c4" }}>
-          {fromShort} {formatTime(decoded.fromTimeSec, { forceHours: true })} の人の
+          {fromShort} {formatTime(decoded.fromTimeSec, { forceHours: true })}
         </div>
-        <div style={{ display: "flex", fontSize: 36, color: "#a3afc6", marginTop: 10 }}>
-          {toShort} 予測タイム
+        <div style={{ display: "flex", fontSize: 30, color: "#a3afc6", marginTop: 6 }}>
+          → {toShort}
         </div>
         <div
           style={{
             display: "flex",
-            fontSize: 140,
+            fontSize: 144,
             fontWeight: 800,
             color: "#ff7a45",
             lineHeight: 1,
@@ -73,7 +79,7 @@ export async function GET(request: Request): Promise<Response> {
         >
           {formatTime(consensus, { forceHours: true })}
         </div>
-        {sub && !sub.achieved && (
+        {sub && subLabel && (
           <div
             style={{
               display: "flex",
@@ -82,19 +88,7 @@ export async function GET(request: Request): Promise<Response> {
               marginTop: 24,
             }}
           >
-            🎯 {sub.target.labelJa} まであと {formatSignedDelta(sub.gapSec)}
-          </div>
-        )}
-        {sub?.achieved && (
-          <div
-            style={{
-              display: "flex",
-              fontSize: 32,
-              color: "#ffd166",
-              marginTop: 24,
-            }}
-          >
-            🏆 {sub.target.labelJa} を {formatSignedDelta(sub.gapSec)} で射程内
+            {sub.achieved ? "🏆" : "🎯"} {subLabel} {subText}
           </div>
         )}
       </div>
@@ -110,9 +104,9 @@ export async function GET(request: Request): Promise<Response> {
         }}
       >
         <div style={{ display: "flex" }}>
-          Riegel(一般) {formatTime(preds[0]?.seconds ?? 0, { forceHours: true })} ・ VDOT{" "}
-          {formatTime(preds[1]?.seconds ?? 0, { forceHours: true })} ・ Riegel(エリート){" "}
-          {formatTime(preds[2]?.seconds ?? 0, { forceHours: true })}
+          {t.models.riegel} {formatTime(preds[0]?.seconds ?? 0, { forceHours: true })} ・{" "}
+          {t.models.vdot} {formatTime(preds[1]?.seconds ?? 0, { forceHours: true })} ・{" "}
+          {t.models.riegelElite} {formatTime(preds[2]?.seconds ?? 0, { forceHours: true })}
         </div>
       </div>
     </div>,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/Provider";
 
 interface Props {
   url: string;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function ShareButtons({ url, text }: Props) {
+  const { t } = useI18n();
   const [absoluteUrl, setAbsoluteUrl] = useState(url);
   const [copied, setCopied] = useState(false);
 
@@ -42,7 +44,7 @@ export default function ShareButtons({ url, text }: Props) {
         rel="noreferrer noopener"
         className="rounded-full border border-white/15 bg-black/30 px-4 py-2 hover:border-(--color-rune)"
       >
-        𝕏 でシェア
+        {t.share.x}
       </a>
       <a
         href={lineUrl}
@@ -50,14 +52,14 @@ export default function ShareButtons({ url, text }: Props) {
         rel="noreferrer noopener"
         className="rounded-full border border-white/15 bg-black/30 px-4 py-2 hover:border-emerald-400"
       >
-        LINE でシェア
+        {t.share.line}
       </a>
       <button
         type="button"
         onClick={copyLink}
         className="rounded-full border border-white/15 bg-black/30 px-4 py-2 hover:border-(--color-accent)"
       >
-        {copied ? "✓ コピーしました" : "🔗 リンクをコピー"}
+        {copied ? t.share.copied : t.share.copy}
       </button>
     </div>
   );

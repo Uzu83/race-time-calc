@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { DISTANCE_LABEL_JA, DISTANCES, type DistanceKey } from "@/lib/distance";
+import { DISTANCES, type DistanceKey, paceSecondsPerKmToString } from "@/lib/distance";
 import { encodeInput } from "@/lib/encoding";
+import { useI18n } from "@/lib/i18n/Provider";
+import { consensusSeconds, predictAll } from "@/lib/predict";
 import { useCalcStore } from "@/lib/store";
 import { formatTime, parseTimeString, secondsToHMS } from "@/lib/time";
 
@@ -12,13 +14,13 @@ const TO_KEYS: DistanceKey[] = ["5k", "10k", "half", "30k", "full"];
 
 export default function CalcForm() {
   const router = useRouter();
+  const { t } = useI18n();
   const { fromKey, fromTimeSec, toKey, setFromKey, setFromTimeSec, setToKey } = useCalcStore();
   const [timeInput, setTimeInput] = useState<string>(() =>
     formatTime(fromTimeSec, { forceHours: true }),
   );
   const [error, setError] = useState<string | null>(null);
 
-  // Sync input field when store changes externally (e.g. preset click).
   useEffect(() => {
     setTimeInput(formatTime(fromTimeSec, { forceHours: true }));
   }, [fromTimeSec]);
@@ -26,21 +28,24 @@ export default function CalcForm() {
   const inferredPace = useMemo(() => {
     const meters = DISTANCES[fromKey];
     if (!meters || fromTimeSec <= 0) return null;
-    const sec = fromTimeSec / (meters / 1000);
-    const m = Math.floor(sec / 60);
-    const s = Math.round(sec - m * 60);
-    return `${m}'${s.toString().padStart(2, "0")}"/km`;
+    return paceSecondsPerKmToString(fromTimeSec / (meters / 1000));
   }, [fromKey, fromTimeSec]);
+
+  const livePreview = useMemo(() => {
+    if (fromKey === toKey || fromTimeSec <= 0) return null;
+    const preds = predictAll(DISTANCES[fromKey], fromTimeSec, DISTANCES[toKey]);
+    return consensusSeconds(preds);
+  }, [fromKey, fromTimeSec, toKey]);
 
   function applyTimeInput(raw: string) {
     setTimeInput(raw);
     const sec = parseTimeString(raw);
     if (sec === null) {
-      setError("時間の形式が正しくありません (例: 0:45:30 や 45:30)");
+      setError(t.form.invalidTime);
       return;
     }
     if (sec <= 0 || sec > 24 * 3600) {
-      setError("現実的な範囲のタイムを入力してください");
+      setError(t.form.unrealistic);
       return;
     }
     setError(null);
@@ -51,11 +56,11 @@ export default function CalcForm() {
     e.preventDefault();
     const sec = parseTimeString(timeInput);
     if (sec === null || sec <= 0 || sec > 24 * 3600) {
-      setError("時間の形式が正しくありません (例: 0:45:30 や 45:30)");
+      setError(t.form.invalidTime);
       return;
     }
     if (fromKey === toKey) {
-      setError("現在の距離と予測したい距離が同じです");
+      setError(t.form.sameDistance);
       return;
     }
     const hash = encodeInput({ fromKey, fromTimeSec: sec, toKey });
@@ -71,7 +76,7 @@ export default function CalcForm() {
     >
       <fieldset className="space-y-2">
         <legend className="block text-sm font-semibold text-(--color-accent-soft)">
-          現在の自己ベスト距離
+          {t.form.currentDistance}
         </legend>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
           {FROM_KEYS.map((k) => (
@@ -86,7 +91,7 @@ export default function CalcForm() {
                   : "border-white/10 bg-white/5 text-(--color-text-muted) hover:border-white/30"
               }`}
             >
-              {DISTANCE_LABEL_JA[k].replace(/ \(.*\)/, "")}
+              {t.distances[k]}
             </button>
           ))}
         </div>
@@ -94,7 +99,7 @@ export default function CalcForm() {
 
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-(--color-accent-soft)" htmlFor="time">
-          そのタイム (時:分:秒)
+          {t.form.currentTime}
         </label>
         <input
           id="time"
@@ -102,20 +107,24 @@ export default function CalcForm() {
           autoComplete="off"
           value={timeInput}
           onChange={(e) => applyTimeInput(e.target.value)}
-          placeholder="0:45:30"
+          placeholder={t.form.timePlaceholder}
           className="w-full rounded-lg border border-white/15 bg-(--color-bg-soft) px-4 py-3 font-mono text-2xl tracking-wider text-(--color-text) outline-none focus:border-(--color-accent)"
         />
         <div className="flex items-center justify-between text-xs text-(--color-text-muted)">
           <span>
-            {h}時間 {m}分 {s.toString().padStart(2, "0")}秒
+            {h}h {m}m {s.toString().padStart(2, "0")}s
           </span>
-          {inferredPace && <span>推定ペース {inferredPace}</span>}
+          {inferredPace && (
+            <span>
+              {t.form.pace} {inferredPace}
+            </span>
+          )}
         </div>
       </div>
 
       <fieldset className="space-y-2">
         <legend className="block text-sm font-semibold text-(--color-accent-soft)">
-          予測したい距離
+          {t.form.targetDistance}
         </legend>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
           {TO_KEYS.map((k) => (
@@ -131,11 +140,20 @@ export default function CalcForm() {
                   : "border-white/10 bg-white/5 text-(--color-text-muted) hover:border-white/30"
               }`}
             >
-              {DISTANCE_LABEL_JA[k].replace(/ \(.*\)/, "")}
+              {t.distances[k]}
             </button>
           ))}
         </div>
       </fieldset>
+
+      {livePreview && !error && (
+        <div className="flex items-baseline justify-between rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+          <span className="text-xs text-(--color-text-muted)">→ {t.distances[toKey]}</span>
+          <span className="font-mono text-2xl font-bold text-(--color-accent)">
+            {formatTime(livePreview, { forceHours: livePreview >= 3600 })}
+          </span>
+        </div>
+      )}
 
       {error && (
         <p className="rounded border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300">
@@ -147,7 +165,7 @@ export default function CalcForm() {
         type="submit"
         className="pulse-ring w-full rounded-xl bg-(--color-accent) px-6 py-4 text-base font-bold text-black transition-transform hover:scale-[1.01] active:scale-[0.99]"
       >
-        🏃 予測する
+        🏃 {t.form.submit}
       </button>
     </form>
   );
