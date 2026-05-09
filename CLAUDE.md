@@ -52,17 +52,33 @@ The result page shows all three plus their mean ("3モデル平均" = `consensus
 
 ### Routes
 
-- `/` — input form (client)
-- `/result/[hash]` — dynamic, decodes hash; bad hash → `not-found`
-- `/api/og` — Edge runtime, `next/og` `ImageResponse`
-- `/about` — static; explains the models and caveats
+- `/` — input form + Quick Presets + popular landings
+- `/result/[hash]` — share-friendly result, decodes hash; bad hash → `not-found`
+- `/predict` — index of programmatic-SEO landings
+- `/predict/[slug]` — static landings for popular combos (e.g. `10k-45-00-full`). `generateStaticParams` emits `POPULAR_PREDICT_SLUGS` from `lib/seo-landings.ts`. Uses the same `<ResultView>` as `/result/[hash]`.
+- `/pace` — distance / time / pace three-way calculator
+- `/about` — model explanation + FAQ (drives `FAQPage` JSON-LD)
+- `/api/og` — Edge runtime, `next/og` `ImageResponse` (1-day revalidate)
+- `/sitemap.xml` `/robots.txt`
+
+### SEO
+
+- Per-route `alternates.canonical` set explicitly. `metadataBase` from `lib/site.ts`.
+- JSON-LD emitted via `<JsonLd>` (server component): `WebApplication` (home + landings), `FAQPage` (about), `BreadcrumbList` + `Dataset` (results + landings).
+- Internal linking via `<PopularLandings>` (home + result footer "related").
+- All long-tail landings listed in `app/sitemap.ts`.
+
+### Analytics
+
+- `@vercel/analytics` + `@vercel/speed-insights` mounted in `app/layout.tsx`. Speed Insights surfaces Core Web Vitals in the Vercel dashboard — see Notion `📊 Vercel Analytics設定テンプレ`.
 
 ## Conventions
 
 - **Tailwind v4** via `@tailwindcss/postcss`. Theme tokens in `app/globals.css` `@theme {}`, consumed as `text-(--color-accent)`.
 - **TypeScript strict** with `noUncheckedIndexedAccess` — array/record access yields `T | undefined`. Use `arr[0]!` or `arr[i] ?? fallback`.
-- **All user-facing strings are Japanese.** i18n is out of scope.
-- **Zustand store is `"use client"`** and uses `sessionStorage` (not localStorage) — diagnoses don't persist across browser restarts on purpose.
+- **i18n is in scope** — `ja` (default) / `en` / `ko`. All user-facing copy lives in `lib/i18n/dictionary.ts` typed by `Dict`. Locale picked from cookie (`race-time-calc:locale`, see `lib/i18n/cookie.ts`) or Accept-Language. Server: `getServerDict()`. Client: `useI18n()`.
+- **`SITE_URL`** is centralized in `lib/site.ts` (`NEXT_PUBLIC_SITE_URL` env, fallback to a stub). Always import from there — never read the env directly.
+- **Zustand store is `"use client"`** and uses `sessionStorage` (not localStorage) — inputs don't persist across browser restarts on purpose.
 - **No backend.** If a feature needs persistence, it should be encoded in the URL or dropped.
 
 ## Hard Constraints (excerpt)
@@ -84,6 +100,6 @@ Confirm with the user before:
 
 ## Roadmap
 
-1. **Phase 1 (MVP)** — 3-model prediction, input UI, result page, OGP, training plan ✅ (initial commit).
-2. **Phase 2 (polish)** — pace chart enhancements (negative-split toggle), more sub-targets (ハーフ サブ1:30 系など強化), Lighthouse mobile ≥ 90.
-3. **Phase 3 (growth)** — SEO content pages (e.g. "5K 25:00 で走る人のフル予測" generated routes), affiliate links (シューズ・Garmin), AdSense after DAU threshold.
+1. **Phase 1 (MVP)** — 3-model prediction, input UI, result page, OGP, training plan ✅
+2. **Phase 2 (polish)** — pace chart even/negative split toggle ✅, FAQ + JSON-LD ✅, Speed Insights ✅. Remaining: Lighthouse mobile ≥ 90 verification.
+3. **Phase 3 (growth)** — `/predict/[slug]` programmatic landings (initial set of ~27 slugs) ✅. Remaining: affiliate links (シューズ・Garmin), AdSense after DAU threshold, GA4 (`@next/third-parties`) when needed.

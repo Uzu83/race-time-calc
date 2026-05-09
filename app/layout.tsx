@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import HeaderNav from "@/components/HeaderNav";
 import { getDict } from "@/lib/i18n/dictionary";
@@ -71,6 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </footer>
         </I18nProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
