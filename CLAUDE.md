@@ -67,10 +67,15 @@ The result page shows all three plus their mean ("3モデル平均" = `consensus
 - JSON-LD emitted via `<JsonLd>` (server component): `WebApplication` (home + landings), `FAQPage` (about), `BreadcrumbList` + `Dataset` (results + landings).
 - Internal linking via `<PopularLandings>` (home + result footer "related").
 - All long-tail landings listed in `app/sitemap.ts`.
+- Google Search Console verification via `metadata.verification.google` in `app/layout.tsx`.
 
 ### Analytics
 
 - `@vercel/analytics` + `@vercel/speed-insights` mounted in `app/layout.tsx`. Speed Insights surfaces Core Web Vitals in the Vercel dashboard — see Notion `📊 Vercel Analytics設定テンプレ`.
+
+### ⚠️ Production env gotcha
+
+**`NEXT_PUBLIC_SITE_URL` must be set in Vercel for any SEO to work.** `lib/site.ts` falls back to a placeholder `https://race-time-calc.example.com` when the env is absent — sitemap.xml, canonical, OGP image URLs and JSON-LD will all reference this nonexistent domain. Set it in Vercel Settings → Environment Variables (Production + Preview) before submitting the sitemap to Search Console. The same caveat applies to every sister project sharing this `lib/site.ts` pattern.
 
 ## Conventions
 

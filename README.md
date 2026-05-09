@@ -45,15 +45,16 @@ pnpm fmt                    # biome format --write .
 
 ### 環境変数
 
-| 変数 | 用途 |
-|---|---|
-| `NEXT_PUBLIC_SITE_URL` | canonical / OGP / sitemap で使う絶対 URL。例: `https://race-time-calc.vercel.app` |
+| 変数 | 必須 | 用途 |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | **本番必須** | canonical / OGP / sitemap.xml / JSON-LD で使う絶対 URL。例: `https://race-time-calc.vercel.app` |
 
-未設定でもビルドは通るが、本番では必ずセットすること (canonical が `example.com` フォールバックになる)。
+> ⚠️ **本番では必ずセット**。未設定だと `lib/site.ts` のフォールバック `https://race-time-calc.example.com` が使われ、sitemap.xml / canonical / OGP のすべてが存在しないドメインを指すため SEO 系が全滅する。Search Console 提出前に Vercel Settings → Environment Variables に追加 → Redeploy。
 
 ## アーキテクチャ要点
 
 - **stateless**: 入力は全て URL に格納。バックエンド・DB なし。
+- **`lib/site.ts`**: `NEXT_PUBLIC_SITE_URL` を一元読込。canonical / OGP / sitemap / JSON-LD すべてここ経由。
 - **`lib/predict.ts`**: 3 モデルの数式実装。VDOT は 80 step 二分法で逆算。
 - **`lib/seo-landings.ts`**: `/predict/[slug]` の静的パラメータ・スラッグ ⇄ RaceInput パースを集約。
 - **`components/ResultView.tsx`**: `/result/[hash]` と `/predict/[slug]` で共有する結果レンダラ。
@@ -61,4 +62,15 @@ pnpm fmt                    # biome format --write .
 
 ## デプロイ
 
-Vercel に main へ push で自動デプロイ。詳細手順は Notion の [⚡ Next.js 初期セットアップテンプレ](https://www.notion.so/35a1ef8488d5815290bcd07ac5937e4f) と [📊 Vercel Analytics 設定テンプレ](https://www.notion.so/35a1ef8488d5814ba4fef7372dc88c38) を参照。
+Vercel に main へ push で自動デプロイ。
+
+### 初回セットアップチェックリスト
+1. Vercel ダッシュボードで Production ドメインを確認 (例: `race-time-calc.vercel.app`)
+2. Settings → Environment Variables → `NEXT_PUBLIC_SITE_URL` を **Production + Preview** にセット
+3. Redeploy (もしくは次の `git push` で自動反映)
+4. `https://<your-domain>/sitemap.xml` を開いて URL が正しく出ているか確認
+5. `<head>` の `<meta name="google-site-verification" ...>` で Search Console の所有権確認
+6. Search Console で `sitemap.xml` を送信
+7. PageSpeed Insights / Rich Results Test で構造化データ・Core Web Vitals を検証
+
+詳細手順は Notion の [⚡ Next.js 初期セットアップテンプレ](https://www.notion.so/35a1ef8488d5815290bcd07ac5937e4f) と [📊 Vercel Analytics 設定テンプレ](https://www.notion.so/35a1ef8488d5814ba4fef7372dc88c38) を参照。
