@@ -5,9 +5,8 @@ import { getDict } from "@/lib/i18n/dictionary";
 import { LOCALE_HTML_LANG } from "@/lib/i18n/locales";
 import { I18nProvider } from "@/lib/i18n/Provider";
 import { resolveLocale } from "@/lib/i18n/server";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://race-time-calc.example.com";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await resolveLocale();

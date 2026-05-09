@@ -1,11 +1,20 @@
+import type { Metadata } from "next";
 import CalcForm from "@/components/CalcForm";
+import JsonLd from "@/components/JsonLd";
+import PopularLandings from "@/components/PopularLandings";
 import QuickPresets from "@/components/QuickPresets";
 import { getServerDict } from "@/lib/i18n/server";
+import { webApplicationLd } from "@/lib/seo-jsonld";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return { alternates: { canonical: "/" } };
+}
 
 export default async function Home() {
-  const { t } = await getServerDict();
+  const { locale, t } = await getServerDict();
   return (
     <div className="space-y-10">
+      <JsonLd data={webApplicationLd(t.meta, locale)} />
       <section className="fade-up space-y-4 text-center">
         <h1 className="text-3xl font-bold leading-tight md:text-4xl">
           {t.home.titleA}
@@ -35,6 +44,8 @@ export default async function Home() {
           <li>◯ {t.home.feat4}</li>
         </ul>
       </section>
+
+      <PopularLandings locale={locale} limit={12} />
     </div>
   );
 }

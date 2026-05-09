@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useI18n } from "@/lib/i18n/Provider";
 
 interface Props {
   /** total target distance in km */
@@ -9,22 +10,37 @@ interface Props {
   avgPaceSec: number;
 }
 
+type Strategy = "even" | "negative";
+
 /**
  * Simple SVG pace chart — assumes negative-split-friendly even pacing
- * with a small +5s/km drift after 30km to reflect real fatigue.
+ * with a small +0.5s/km/km drift after 30km in "even" mode (real-world fade).
+ * The "negative" mode shows the optimum target: −0.5%/km in the back half.
  * No external charting library: keeps the bundle tiny.
  */
 export default function PaceChart({ totalKm, avgPaceSec }: Props) {
+  const { t } = useI18n();
+  const [strategy, setStrategy] = useState<Strategy>("even");
+
   const lapPlan = useMemo(() => {
     const km = Math.floor(totalKm);
     const out: { km: number; paceSec: number }[] = [];
     for (let i = 1; i <= km; i++) {
-      // pace drift: stay flat 1..30km, +0.5s/km/km after 30
-      const drift = i <= 30 ? 0 : (i - 30) * 0.5;
-      out.push({ km: i, paceSec: avgPaceSec + drift });
+      let paceSec: number;
+      if (strategy === "even") {
+        // pace drift: stay flat 1..30km, +0.5s/km/km after 30
+        const drift = i <= 30 ? 0 : (i - 30) * 0.5;
+        paceSec = avgPaceSec + drift;
+      } else {
+        // negative split: front half +0.5%, back half −0.5%, linear
+        const t = km <= 1 ? 0 : (i - 1) / (km - 1);
+        const pct = 0.005 - 0.01 * t;
+        paceSec = avgPaceSec * (1 + pct);
+      }
+      out.push({ km: i, paceSec });
     }
     return out;
-  }, [totalKm, avgPaceSec]);
+  }, [totalKm, avgPaceSec, strategy]);
 
   if (lapPlan.length === 0) return null;
 
@@ -53,11 +69,33 @@ export default function PaceChart({ totalKm, avgPaceSec }: Props) {
 
   return (
     <div className="space-y-2">
+      <div
+        className="inline-flex rounded-md border border-white/10 bg-black/20 p-0.5 text-xs"
+        role="tablist"
+        aria-label="pace strategy"
+      >
+        {(["even", "negative"] as const).map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="tab"
+            aria-selected={strategy === s}
+            onClick={() => setStrategy(s)}
+            className={`rounded px-2.5 py-1 transition-colors ${
+              strategy === s
+                ? "bg-(--color-accent) text-black"
+                : "text-(--color-text-muted) hover:text-(--color-text)"
+            }`}
+          >
+            {s === "even" ? t.result.racePlanEven : t.result.racePlanNegative}
+          </button>
+        ))}
+      </div>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full rounded-lg bg-black/30"
         role="img"
-        aria-label="設定ペースラップチャート"
+        aria-label={t.result.paceLapTitle}
       >
         <line
           x1={PAD_X}
@@ -87,10 +125,7 @@ export default function PaceChart({ totalKm, avgPaceSec }: Props) {
           {Math.round(totalKm)}km
         </text>
       </svg>
-      <p className="text-[10px] text-(--color-text-muted)">
-        30km 以降は +0.5秒/km/km
-        の自然な減速を含む推奨ラップ。前半を抑えて後半をこの形に近づけると失速しにくい。
-      </p>
+      <p className="text-[10px] text-(--color-text-muted)">{t.result.paceLapNote}</p>
     </div>
   );
 }

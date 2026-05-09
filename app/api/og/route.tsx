@@ -7,6 +7,8 @@ import { consensusSeconds, nextSubTargetGap, predictAll } from "@/lib/predict";
 import { formatSignedDelta, formatTime } from "@/lib/time";
 
 export const runtime = "edge";
+// Allow the OG image to be served by /predict landing pages and fan out caching.
+export const revalidate = 86400;
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);

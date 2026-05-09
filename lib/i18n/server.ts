@@ -1,8 +1,7 @@
 import { cookies, headers } from "next/headers";
+import { LOCALE_COOKIE_NAME } from "./cookie";
 import { getDict } from "./dictionary";
 import { isLocale, type Locale, pickLocaleFromAcceptLanguage } from "./locales";
-
-const COOKIE_NAME = "race-time-calc:locale";
 
 /**
  * Resolve the locale on the server, in priority order:
@@ -12,7 +11,7 @@ const COOKIE_NAME = "race-time-calc:locale";
  */
 export async function resolveLocale(): Promise<Locale> {
   const c = await cookies();
-  const fromCookie = c.get(COOKIE_NAME)?.value;
+  const fromCookie = c.get(LOCALE_COOKIE_NAME)?.value;
   if (fromCookie && isLocale(fromCookie)) return fromCookie;
   const h = await headers();
   return pickLocaleFromAcceptLanguage(h.get("accept-language"));
@@ -23,4 +22,4 @@ export async function getServerDict() {
   return { locale, t: getDict(locale) };
 }
 
-export const LOCALE_COOKIE_NAME = COOKIE_NAME;
+export { LOCALE_COOKIE_NAME };

@@ -18,16 +18,19 @@ const ZONE_BG: Record<ZoneKey, string> = {
 
 export default function TrainingPaces({ vdot, paces }: Props) {
   const { t } = useI18n();
-  const labels = t.zones;
   const zoneText = (z: ZoneKey) => {
-    const map = {
-      easy: { label: labels.easy, desc: labels.easyDesc },
-      marathon: { label: labels.marathon, desc: labels.marathonDesc },
-      threshold: { label: labels.threshold, desc: labels.thresholdDesc },
-      interval: { label: labels.interval, desc: labels.intervalDesc },
-      repetition: { label: labels.repetition, desc: labels.repetitionDesc },
-    } as const;
-    return map[z];
+    switch (z) {
+      case "easy":
+        return { label: t.zones.easy, desc: t.zones.easyDesc };
+      case "marathon":
+        return { label: t.zones.marathon, desc: t.zones.marathonDesc };
+      case "threshold":
+        return { label: t.zones.threshold, desc: t.zones.thresholdDesc };
+      case "interval":
+        return { label: t.zones.interval, desc: t.zones.intervalDesc };
+      case "repetition":
+        return { label: t.zones.repetition, desc: t.zones.repetitionDesc };
+    }
   };
 
   return (

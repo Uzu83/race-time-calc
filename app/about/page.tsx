@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import JsonLd from "@/components/JsonLd";
 import { getServerDict } from "@/lib/i18n/server";
+import { faqLd } from "@/lib/seo-jsonld";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getServerDict();
-  return { title: t.about.title, description: t.meta.siteDescription };
+  return {
+    title: t.about.title,
+    description: t.meta.siteDescription,
+    alternates: { canonical: "/about" },
+  };
 }
 
 export default async function AboutPage() {
   const { t } = await getServerDict();
+  const faq = t.about.faq;
   return (
     <article className="prose prose-invert max-w-none space-y-6 text-sm leading-relaxed">
+      <JsonLd data={faqLd(faq.map((f) => ({ question: f.q, answer: f.a })))} />
       <h1 className="text-2xl font-bold">{t.about.title}</h1>
 
       <section>
@@ -41,6 +49,18 @@ export default async function AboutPage() {
           <li>{t.about.caution2}</li>
           <li>{t.about.caution3}</li>
         </ul>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold text-(--color-accent-soft)">{t.about.faqHeading}</h2>
+        <dl className="space-y-4">
+          {faq.map((f) => (
+            <div key={f.q} className="rounded-lg border border-white/10 bg-white/[0.02] p-4">
+              <dt className="font-semibold">Q. {f.q}</dt>
+              <dd className="mt-1.5 text-(--color-text-muted)">A. {f.a}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       <section className="text-xs">

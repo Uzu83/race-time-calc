@@ -2,10 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LOCALE_COOKIE_NAME } from "@/lib/i18n/cookie";
 import { LOCALE_FLAGS, LOCALE_NAMES, LOCALES, type Locale } from "@/lib/i18n/locales";
 import { useI18n } from "@/lib/i18n/Provider";
-
-const COOKIE = "race-time-calc:locale";
 
 export default function LanguageSwitcher() {
   const router = useRouter();
@@ -16,7 +15,7 @@ export default function LanguageSwitcher() {
     setOpen(false);
     if (next === locale) return;
     // biome-ignore lint/suspicious/noDocumentCookie: simple, sync, broadly supported. Cookie Store API is still partial.
-    document.cookie = `${COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+    document.cookie = `${LOCALE_COOKIE_NAME}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
     router.refresh();
   }
 

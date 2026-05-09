@@ -23,6 +23,8 @@ interface Dict {
     feat4: string;
     quickHeading: string;
     quickSub: string;
+    popularHeading: string;
+    relatedHeading: string;
   };
   form: {
     currentDistance: string;
@@ -133,6 +135,15 @@ interface Dict {
     caution1: string;
     caution2: string;
     caution3: string;
+    faqHeading: string;
+    faq: { q: string; a: string }[];
+  };
+  predict: {
+    h1: string;
+    description: string;
+    indexTitle: string;
+    indexTagline: string;
+    seeFullResult: string;
   };
   footer: {
     disclaimer: string;
@@ -181,6 +192,8 @@ export const DICT: Record<Locale, Dict> = {
       feat4: "VDOT トレーニングペース・5kmスプリット・気温補正に対応",
       quickHeading: "よくある条件で見る",
       quickSub: "タップで結果ページに直行 — 自分の目安と比較してみて。",
+      popularHeading: "人気の予測ページ",
+      relatedHeading: "関連する予測",
     },
     form: {
       currentDistance: "現在の自己ベスト距離",
@@ -303,6 +316,37 @@ export const DICT: Record<Locale, Dict> = {
         "気象条件 (気温・湿度・風)、コース (高低差)、補給、当日のコンディション、そして本番までのトレーニング状態により実タイムは変動します。",
       caution3:
         "短い距離 (3km 等) からフルへの予測は誤差が大きくなりがち。ハーフの記録があれば最も信頼度が高くなります。",
+      faqHeading: "よくある質問",
+      faq: [
+        {
+          q: "Riegel・VDOT・Riegel-Elite の3モデルはどれを信じればいい?",
+          a: "3つの平均値が中央値の目安。Riegel (k=1.14) は保守的、Riegel-Elite (k=1.06) は楽観的、VDOT はその中間に来やすい。週60km 以上を継続している鍛錬されたランナーなら Riegel-Elite に寄ります。",
+        },
+        {
+          q: "サブ4・サブ3 を達成するには月何km走ればいい?",
+          a: "経験則ですが、サブ4 は月150〜250km、サブ3.5 は月250〜350km、サブ3 は月350km 以上が目安。距離だけでなく、テンポ走と閾値ペースを月数回入れることが鍵。",
+        },
+        {
+          q: "なぜ Cameron 公式ではなく Riegel-Elite を採用しているの?",
+          a: "Cameron (1998) の textbook 公式は amateur ランナー (10K 45分相当) に対して非現実的に速い予測を返すため。透明で検証しやすい代替として Riegel オリジナル定数 (k=1.06) を「楽観的上限」として採用しています。",
+        },
+        {
+          q: "気温が高い日の予測はどう見ればいい?",
+          a: "Daniels の経験則で +5°C ごとにマラソンペースが約 1.6% 落ちます。結果ページの『気温補正』スライダーで当日予報を入力すれば調整後タイムが見られます。15°C 超で対策必須、25°C 超でサブ目標は再考。",
+        },
+        {
+          q: "URL を共有するだけで同じ予測を再現できるのはなぜ?",
+          a: "予測の入力 (距離・タイム・目標距離) を全て URL に埋め込んでいるため。バックエンド・DB なしの完全 stateless 設計なので、同じハッシュ・同じスラッグを開けば誰でも同じ結果が見られます。",
+        },
+      ],
+    },
+    predict: {
+      h1: "{{from}} {{time}} → {{to}} の予測タイム",
+      description:
+        "{{from}} を {{time}} で走る人が、{{to}} を何分何秒で走れるか。3モデル平均と各モデル個別予測、推奨ペース・トレーニングメニューまで一括表示。",
+      indexTitle: "予測ランディング 一覧",
+      indexTagline: "よく検索される距離・タイムの組み合わせ。タップで予測結果ページへ。",
+      seeFullResult: "→ 完全な結果ページを見る",
     },
     footer: {
       disclaimer:
@@ -392,6 +436,8 @@ export const DICT: Record<Locale, Dict> = {
       feat4: "VDOT training paces, 5K splits and heat adjustment included",
       quickHeading: "Common starting points",
       quickSub: "Tap to jump straight to the result and compare against your own.",
+      popularHeading: "Popular prediction pages",
+      relatedHeading: "Related predictions",
     },
     form: {
       currentDistance: "Current best distance",
@@ -517,6 +563,37 @@ export const DICT: Record<Locale, Dict> = {
         "Weather (heat, humidity, wind), course (elevation), fueling, race-day condition and remaining training all move the actual time.",
       caution3:
         "Predictions from very short distances (e.g. 3 km) to the marathon have larger error. A half-marathon input is the highest-confidence anchor.",
+      faqHeading: "Frequently asked",
+      faq: [
+        {
+          q: "Riegel, VDOT, Riegel-Elite — which one should I trust?",
+          a: "The 3-model average is the central tendency. Riegel (k=1.14) is conservative, Riegel-Elite (k=1.06) is optimistic, and VDOT usually sits between. Highly trained runners on 60+ km/week skew toward Riegel-Elite.",
+        },
+        {
+          q: "How many km per month do I need for Sub-4 / Sub-3?",
+          a: "Rough community benchmarks: Sub-4 ≈ 150–250 km/month, Sub-3:30 ≈ 250–350 km/month, Sub-3 ≈ 350+ km/month. Volume is necessary but not sufficient — tempo and threshold work matters too.",
+        },
+        {
+          q: "Why use Riegel-Elite instead of the Cameron formula?",
+          a: "Textbook Cameron (1998) returns unrealistically fast predictions for amateur runners (e.g. ~3:09 marathon from a 45:00 10K). Riegel-Elite (k=1.06) is a transparent, verifiable substitute that fills the same 'optimistic upper bound' role.",
+        },
+        {
+          q: "How should I read the prediction on a hot day?",
+          a: "Daniels' rule of thumb: marathon pace falls about 1.6% per +5°C above ~10°C. Use the 'Heat adjustment' slider on the result page with the day's forecast. Above 15°C plan a coping strategy; above 25°C reconsider sub-goals.",
+        },
+        {
+          q: "Why does sharing a URL reproduce the exact same prediction?",
+          a: "All inputs (from-distance, time, to-distance) are encoded in the URL itself. There's no backend or database — the URL is the data, so anyone opening the same hash or slug sees the same result.",
+        },
+      ],
+    },
+    predict: {
+      h1: "Predicted {{to}} time from a {{from}} {{time}}",
+      description:
+        "If you ran {{from}} in {{time}}, how fast can you finish {{to}}? Sees the 3-model average, individual model predictions, recommended pace and a training plan in one place.",
+      indexTitle: "Prediction landings",
+      indexTagline: "Common race-distance / time combos. Tap to jump to the prediction.",
+      seeFullResult: "→ See the full result page",
     },
     footer: {
       disclaimer:
@@ -606,6 +683,8 @@ export const DICT: Record<Locale, Dict> = {
       feat4: "VDOT 트레이닝 페이스, 5K 스플릿, 기온 보정 지원",
       quickHeading: "자주 쓰는 조건",
       quickSub: "탭하면 결과 페이지로 직행 — 자신의 기록과 비교해 보세요.",
+      popularHeading: "인기 예측 페이지",
+      relatedHeading: "관련 예측",
     },
     form: {
       currentDistance: "현재 자기 최고 거리",
@@ -727,6 +806,37 @@ export const DICT: Record<Locale, Dict> = {
         "기상 조건 (기온·습도·바람), 코스 (고저차), 보급, 당일 컨디션, 본 레이스까지의 트레이닝 상태에 따라 실제 기록은 변동합니다.",
       caution3:
         "짧은 거리 (3km 등) 에서 마라톤으로의 예측은 오차가 커지기 쉽습니다. 하프 기록이 있으면 신뢰도가 가장 높아집니다.",
+      faqHeading: "자주 묻는 질문",
+      faq: [
+        {
+          q: "Riegel · VDOT · Riegel-Elite 3개 모델 중 어느 것을 믿어야 하나요?",
+          a: "3개 평균이 중앙값 기준입니다. Riegel (k=1.14) 는 보수적, Riegel-Elite (k=1.06) 는 낙관적, VDOT 는 그 사이에 자리합니다. 주 60km 이상 단련된 러너는 Riegel-Elite 쪽으로 기울어집니다.",
+        },
+        {
+          q: "서브4 · 서브3 달성에 월 얼마나 달려야 하나요?",
+          a: "경험치로 서브4 는 월 150~250km, 서브3:30 은 월 250~350km, 서브3 는 월 350km 이상이 기준. 거리뿐 아니라 템포 런과 역치 페이스 훈련도 핵심입니다.",
+        },
+        {
+          q: "왜 Cameron 공식이 아니라 Riegel-Elite 를 쓰나요?",
+          a: "Cameron (1998) 의 textbook 공식은 아마추어 러너에게 비현실적으로 빠른 예측을 내놓습니다 (10K 45분에서 약 3:09 마라톤). 투명하고 검증 가능한 대안으로 Riegel 원래의 k=1.06 을 「낙관적 상한」으로 채택했습니다.",
+        },
+        {
+          q: "더운 날 예측은 어떻게 봐야 하나요?",
+          a: "Daniels 의 경험칙으로 +5°C 마다 마라톤 페이스가 약 1.6% 떨어집니다. 결과 페이지의 「기온 보정」 슬라이더로 당일 예보를 입력하면 보정된 시간을 확인할 수 있습니다.",
+        },
+        {
+          q: "URL 공유만으로 같은 예측이 재현되는 이유는?",
+          a: "모든 입력 (출발 거리 · 시간 · 목표 거리) 이 URL 자체에 인코딩되어 있기 때문. 백엔드나 DB 없이 완전히 stateless 구조라 같은 해시·슬러그를 열면 누구나 동일한 결과를 봅니다.",
+        },
+      ],
+    },
+    predict: {
+      h1: "{{from}} {{time}} → {{to}} 예측 시간",
+      description:
+        "{{from}} 을(를) {{time}} 에 달리는 사람이 {{to}} 를 얼마에 달릴 수 있는지. 3모델 평균과 개별 모델 예측, 추천 페이스와 트레이닝 메뉴까지 한눈에.",
+      indexTitle: "예측 랜딩 모음",
+      indexTagline: "자주 검색되는 거리·시간 조합. 탭하면 예측 결과 페이지로.",
+      seeFullResult: "→ 전체 결과 페이지 보기",
     },
     footer: {
       disclaimer:

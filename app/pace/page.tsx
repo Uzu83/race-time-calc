@@ -7,6 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t.pace.title,
     description: t.pace.tagline,
+    alternates: { canonical: "/pace" },
   };
 }
 
