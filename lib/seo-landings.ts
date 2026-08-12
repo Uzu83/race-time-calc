@@ -20,28 +20,43 @@ export interface LandingPreset {
 
 /**
  * Curated list of common search queries — chosen for strong long-tail SEO
- * fits ("サブ4 ペース", "10K 45分 フル予測", etc.). Keep ~30 to stay focused.
+ * fits ("サブ4 ペース", "10K 45分 フル予測", etc.).
  */
 const PRESETS: readonly LandingPreset[] = [
-  // 10K → full
+  // 10K → full (サブ4〜サブ3 帯の穴埋め含む)
   { fromKey: "10k", fromTimeSec: 60 * 60, toKey: "full" },
   { fromKey: "10k", fromTimeSec: 55 * 60, toKey: "full" },
+  { fromKey: "10k", fromTimeSec: 52 * 60, toKey: "full" },
   { fromKey: "10k", fromTimeSec: 50 * 60, toKey: "full" },
+  { fromKey: "10k", fromTimeSec: 48 * 60, toKey: "full" },
   { fromKey: "10k", fromTimeSec: 45 * 60, toKey: "full" },
+  { fromKey: "10k", fromTimeSec: 44 * 60, toKey: "full" },
+  { fromKey: "10k", fromTimeSec: 42 * 60, toKey: "full" },
   { fromKey: "10k", fromTimeSec: 40 * 60, toKey: "full" },
+  { fromKey: "10k", fromTimeSec: 39 * 60, toKey: "full" },
   { fromKey: "10k", fromTimeSec: 38 * 60, toKey: "full" },
+  { fromKey: "10k", fromTimeSec: 36 * 60, toKey: "full" },
   { fromKey: "10k", fromTimeSec: 35 * 60, toKey: "full" },
   // 5K → full
   { fromKey: "5k", fromTimeSec: 30 * 60, toKey: "full" },
   { fromKey: "5k", fromTimeSec: 25 * 60, toKey: "full" },
+  { fromKey: "5k", fromTimeSec: 23 * 60, toKey: "full" },
   { fromKey: "5k", fromTimeSec: 22 * 60, toKey: "full" },
+  { fromKey: "5k", fromTimeSec: 21 * 60, toKey: "full" },
   { fromKey: "5k", fromTimeSec: 20 * 60, toKey: "full" },
   { fromKey: "5k", fromTimeSec: 18 * 60, toKey: "full" },
-  // half → full
+  // half → full (サブ4 / サブ3.5 / サブ3 帯)
   { fromKey: "half", fromTimeSec: 2 * 3600, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 55 * 60, toKey: "full" },
   { fromKey: "half", fromTimeSec: 1 * 3600 + 50 * 60, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 48 * 60, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 42 * 60, toKey: "full" },
   { fromKey: "half", fromTimeSec: 1 * 3600 + 40 * 60, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 38 * 60, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 35 * 60, toKey: "full" },
   { fromKey: "half", fromTimeSec: 1 * 3600 + 30 * 60, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 28 * 60, toKey: "full" },
+  { fromKey: "half", fromTimeSec: 1 * 3600 + 25 * 60, toKey: "full" },
   { fromKey: "half", fromTimeSec: 1 * 3600 + 20 * 60, toKey: "full" },
   // 5K → half / 10K
   { fromKey: "5k", fromTimeSec: 25 * 60, toKey: "half" },
@@ -50,7 +65,9 @@ const PRESETS: readonly LandingPreset[] = [
   { fromKey: "5k", fromTimeSec: 22 * 60, toKey: "10k" },
   // 10K → half
   { fromKey: "10k", fromTimeSec: 50 * 60, toKey: "half" },
+  { fromKey: "10k", fromTimeSec: 48 * 60, toKey: "half" },
   { fromKey: "10k", fromTimeSec: 45 * 60, toKey: "half" },
+  { fromKey: "10k", fromTimeSec: 42 * 60, toKey: "half" },
   { fromKey: "10k", fromTimeSec: 40 * 60, toKey: "half" },
   // 30K → full (a popular reality-check route in Japan)
   { fromKey: "30k", fromTimeSec: 3 * 3600, toKey: "full" },

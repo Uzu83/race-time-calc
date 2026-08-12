@@ -2,11 +2,12 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import HeaderNav from "@/components/HeaderNav";
+import { isAmazonAffiliateEnabled } from "@/lib/affiliate";
 import { getDict } from "@/lib/i18n/dictionary";
 import { LOCALE_HTML_LANG } from "@/lib/i18n/locales";
 import { I18nProvider } from "@/lib/i18n/Provider";
 import { resolveLocale } from "@/lib/i18n/server";
-import { SITE_URL } from "@/lib/site";
+import { KOFI_URL, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -71,6 +72,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="mx-auto max-w-3xl space-y-2 px-4 text-center leading-relaxed">
               <p>{t.footer.disclaimer}</p>
               <p className="text-[10px] opacity-60">{t.footer.citation}</p>
+              <p>
+                <a
+                  href={KOFI_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-(--color-rune) underline-offset-2 hover:underline"
+                >
+                  {t.footer.supportCta}
+                </a>
+              </p>
+              {isAmazonAffiliateEnabled() ? (
+                <p className="text-xs text-(--color-text-muted)">{t.footer.affiliateDisclosure}</p>
+              ) : null}
             </div>
           </footer>
         </I18nProvider>
