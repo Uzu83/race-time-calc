@@ -155,7 +155,9 @@ interface Dict {
   gear: {
     title: string;
     body: string;
+    bodyTier: string;
     cta: string;
+    ctaTier: string;
     disclosure: string;
   };
   support: {
@@ -372,9 +374,12 @@ export const DICT: Record<Locale, Dict> = {
         "Amazonのアソシエイトとして、マラソンタイム予測は適格販売により収入を得ています。",
     },
     gear: {
-      title: "この予測帯向けのシューズを探す",
+      title: "予測タイム帯に合うシューズを探す",
       body: "目標タイム帯に合わせたランニングシューズを Amazon で検索します（外部サイト・PR）。",
+      bodyTier:
+        "{{tier}}の目標に合わせたランニングシューズを Amazon で検索します（外部サイト・PR）。",
       cta: "Amazon でシューズを見る",
+      ctaTier: "{{tier}}向けシューズを Amazon で見る",
       disclosure:
         "【PR】Amazonのアソシエイトとして、マラソンタイム予測は適格販売により収入を得ています。リンク先の価格・在庫は Amazon 側の表示に従います。",
     },
@@ -635,9 +640,11 @@ export const DICT: Record<Locale, Dict> = {
         "As an Amazon Associate, Marathon Time Predictor earns from qualifying purchases.",
     },
     gear: {
-      title: "Shoes for this training tier",
+      title: "Shoes for your predicted pace band",
       body: "Browse Amazon for running shoes matched to your predicted pace band (external site · sponsored).",
+      bodyTier: "Browse running shoes matched to {{tier}} on Amazon (external site · sponsored).",
       cta: "Search shoes on Amazon",
+      ctaTier: "Shop {{tier}} shoes on Amazon",
       disclosure:
         "Sponsored: As an Amazon Associate, Marathon Time Predictor earns from qualifying purchases. Price and stock are shown by Amazon.",
     },
@@ -893,9 +900,11 @@ export const DICT: Record<Locale, Dict> = {
         "Amazon 어소시에이트로서 마라톤 타임 예측은 적격 판매를 통해 수입을 얻습니다.",
     },
     gear: {
-      title: "이 예측대에 맞는 슈즈 찾기",
+      title: "예측 타임대에 맞는 슈즈 찾기",
       body: "목표 타임대에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트·PR).",
+      bodyTier: "{{tier}} 목표에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트·PR).",
       cta: "Amazon에서 슈즈 보기",
+      ctaTier: "{{tier}}용 슈즈를 Amazon에서 보기",
       disclosure:
         "[PR] Amazon 어소시에이트로서 마라톤 타임 예측은 적격 판매를 통해 수입을 얻습니다. 가격·재고는 Amazon 표시를 따릅니다.",
     },
