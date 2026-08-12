@@ -367,19 +367,21 @@ export const DICT: Record<Locale, Dict> = {
         "予測値はあくまで目安です。気象・コース・体調・トレーニング状態により実際のタイムは変動します。",
       citation: "モデル: Peter Riegel (1981) / Jack Daniels VDOT",
       supportCta: "開発を支援する（Ko-fi）",
+      // Amazon JP: サイト名入りの所定文言。曖昧な「当サイト」は避ける。
       affiliateDisclosure:
-        "当サイトは Amazon のアソシエイトとして、適格販売により収入を得ることがあります。",
+        "Amazonのアソシエイトとして、マラソンタイム予測は適格販売により収入を得ています。",
     },
     gear: {
       title: "この予測帯向けのシューズを探す",
-      body: "目標タイム帯に合わせたランニングシューズを Amazon で検索します（外部サイト）。",
+      body: "目標タイム帯に合わせたランニングシューズを Amazon で検索します（外部サイト・PR）。",
       cta: "Amazon でシューズを見る",
       disclosure:
-        "Amazonのアソシエイトとして、適格販売により収入を得ています。リンク先の価格・在庫は Amazon 側の表示に従います。",
+        "【PR】Amazonのアソシエイトとして、マラソンタイム予測は適格販売により収入を得ています。リンク先の価格・在庫は Amazon 側の表示に従います。",
     },
     support: {
       title: "役に立ったら、開発を一杯ぶん支えてください",
-      body: "広告は出していません。予測ツールの改善費に充てます。",
+      // WHY「広告なし」を書かないか: アフィ ON 時にスポンサーリンクと矛盾する（5.6監査 P1）。
+      body: "投げ銭は予測ツールの改善費に充てます。",
       cta: "Ko-fi で支援する",
     },
     distances: {
@@ -629,18 +631,19 @@ export const DICT: Record<Locale, Dict> = {
         "Predictions are estimates only. Weather, course, condition and training will move the actual time.",
       citation: "Models: Peter Riegel (1981) / Jack Daniels VDOT",
       supportCta: "Support development (Ko-fi)",
-      affiliateDisclosure: "As an Amazon Associate I earn from qualifying purchases.",
+      affiliateDisclosure:
+        "As an Amazon Associate, Marathon Time Predictor earns from qualifying purchases.",
     },
     gear: {
       title: "Shoes for this training tier",
-      body: "Browse Amazon for running shoes matched to your predicted pace band (external site).",
+      body: "Browse Amazon for running shoes matched to your predicted pace band (external site · sponsored).",
       cta: "Search shoes on Amazon",
       disclosure:
-        "As an Amazon Associate I earn from qualifying purchases. Price and stock are shown by Amazon.",
+        "Sponsored: As an Amazon Associate, Marathon Time Predictor earns from qualifying purchases. Price and stock are shown by Amazon.",
     },
     support: {
       title: "If this helped, fuel the next improvement",
-      body: "No ads. Tips go to keeping the calculator accurate and fast.",
+      body: "Tips go to keeping the calculator accurate and fast.",
       cta: "Support on Ko-fi",
     },
     distances: {
@@ -886,18 +889,19 @@ export const DICT: Record<Locale, Dict> = {
         "예측값은 어디까지나 기준입니다. 기상 · 코스 · 컨디션 · 트레이닝 상태에 따라 실제 기록은 변동합니다.",
       citation: "모델: Peter Riegel (1981) / Jack Daniels VDOT",
       supportCta: "개발 지원하기 (Ko-fi)",
-      affiliateDisclosure: "Amazon 어소시에이트로서 적격 판매를 통해 수입을 얻을 수 있습니다.",
+      affiliateDisclosure:
+        "Amazon 어소시에이트로서 마라톤 타임 예측은 적격 판매를 통해 수입을 얻습니다.",
     },
     gear: {
       title: "이 예측대에 맞는 슈즈 찾기",
-      body: "목표 타임대에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트).",
+      body: "목표 타임대에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트·PR).",
       cta: "Amazon에서 슈즈 보기",
       disclosure:
-        "Amazon 어소시에이트로서 적격 판매를 통해 수입을 얻습니다. 가격·재고는 Amazon 표시를 따릅니다.",
+        "[PR] Amazon 어소시에이트로서 마라톤 타임 예측은 적격 판매를 통해 수입을 얻습니다. 가격·재고는 Amazon 표시를 따릅니다.",
     },
     support: {
       title: "도움이 됐다면 개발을 한 잔 응원해주세요",
-      body: "광고는 없습니다. 예측 도구 개선비에 씁니다.",
+      body: "후원금은 예측 도구 개선비에 씁니다.",
       cta: "Ko-fi로 지원하기",
     },
     distances: {

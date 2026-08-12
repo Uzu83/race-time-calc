@@ -11,6 +11,8 @@ interface Props {
 /**
  * Single contextual Amazon CTA under the training plan.
  * Renders nothing when `NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG` is unset (fail-closed).
+ *
+ * Disclosure is BEFORE the CTA at normal contrast (Amazon "clear and prominent" + 景表法).
  */
 export default function GearAffiliate({ locale, tier }: Props) {
   const href = amazonShoeSearchUrl(tier);
@@ -19,10 +21,13 @@ export default function GearAffiliate({ locale, tier }: Props) {
   const t = getDict(locale);
   return (
     <section
-      className="rounded-2xl border border-(--color-rune)/30 bg-black/20 p-4"
+      className="rounded-2xl border border-(--color-rune)/40 bg-black/25 p-4"
       aria-label={t.gear.title}
     >
-      <h2 className="text-sm font-bold text-(--color-accent-soft)">{t.gear.title}</h2>
+      <p className="text-xs font-semibold leading-relaxed text-(--color-accent-soft)">
+        {t.gear.disclosure}
+      </p>
+      <h2 className="mt-3 text-sm font-bold text-(--color-accent-soft)">{t.gear.title}</h2>
       <p className="mt-1 text-xs leading-relaxed text-(--color-text-muted)">{t.gear.body}</p>
       <a
         href={href}
@@ -32,9 +37,6 @@ export default function GearAffiliate({ locale, tier }: Props) {
       >
         {t.gear.cta}
       </a>
-      <p className="mt-2 text-[10px] leading-relaxed text-(--color-text-muted) opacity-80">
-        {t.gear.disclosure}
-      </p>
     </section>
   );
 }

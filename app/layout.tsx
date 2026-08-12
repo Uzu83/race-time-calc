@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </a>
               </p>
               {isAmazonAffiliateEnabled() ? (
-                <p className="text-[10px] opacity-70">{t.footer.affiliateDisclosure}</p>
+                <p className="text-xs text-(--color-text-muted)">{t.footer.affiliateDisclosure}</p>
               ) : null}
             </div>
           </footer>
