@@ -1,5 +1,6 @@
 import Link from "next/link";
 import EquivalentTimes from "@/components/EquivalentTimes";
+import GearAffiliate from "@/components/GearAffiliate";
 import HeatAdjuster from "@/components/HeatAdjuster";
 import PaceChart from "@/components/PaceChart";
 import PopularLandings from "@/components/PopularLandings";
@@ -12,6 +13,7 @@ import { equivalentTimes } from "@/lib/equivalents";
 import { getDict, interpolate } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/locales";
 import { consensusSeconds, nextSubTargetGap, predictAll, vdotFromRace } from "@/lib/predict";
+import { KOFI_URL } from "@/lib/site";
 import { formatSignedDelta, formatTime, formatTimeJa } from "@/lib/time";
 import { planForFullSeconds } from "@/lib/training";
 import { trainingPaces } from "@/lib/training-paces";
@@ -201,6 +203,9 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
         <p className="text-[11px] leading-relaxed text-(--color-text-muted)">{tierText.comment}</p>
       </section>
 
+      {/* Env-gated: renders null until NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG is set. */}
+      <GearAffiliate locale={locale} tier={planMeta.key} />
+
       <section className="space-y-3">
         <h2 className="text-sm font-bold text-(--color-accent-soft)">{t.result.shareTitle}</h2>
         <ShareButtons url={pageUrl} text={shareText} />
@@ -211,6 +216,20 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
             </Link>
           </div>
         )}
+      </section>
+
+      {/* Soft tip after share — intent is highest post-prediction. */}
+      <section className="rounded-2xl border border-white/10 bg-black/15 p-4">
+        <h2 className="text-sm font-bold text-(--color-accent-soft)">{t.support.title}</h2>
+        <p className="mt-1 text-xs leading-relaxed text-(--color-text-muted)">{t.support.body}</p>
+        <a
+          href={KOFI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex text-sm font-semibold text-(--color-rune) underline-offset-2 hover:underline"
+        >
+          {t.support.cta}
+        </a>
       </section>
 
       <PopularLandings

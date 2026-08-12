@@ -148,6 +148,20 @@ interface Dict {
   footer: {
     disclaimer: string;
     citation: string;
+    supportCta: string;
+    /** Shown under affiliate CTA when Amazon tag is live (景表法). */
+    affiliateDisclosure: string;
+  };
+  gear: {
+    title: string;
+    body: string;
+    cta: string;
+    disclosure: string;
+  };
+  support: {
+    title: string;
+    body: string;
+    cta: string;
   };
   distances: {
     "3k": string;
@@ -352,6 +366,21 @@ export const DICT: Record<Locale, Dict> = {
       disclaimer:
         "予測値はあくまで目安です。気象・コース・体調・トレーニング状態により実際のタイムは変動します。",
       citation: "モデル: Peter Riegel (1981) / Jack Daniels VDOT",
+      supportCta: "開発を支援する（Ko-fi）",
+      affiliateDisclosure:
+        "当サイトは Amazon のアソシエイトとして、適格販売により収入を得ることがあります。",
+    },
+    gear: {
+      title: "この予測帯向けのシューズを探す",
+      body: "目標タイム帯に合わせたランニングシューズを Amazon で検索します（外部サイト）。",
+      cta: "Amazon でシューズを見る",
+      disclosure:
+        "Amazonのアソシエイトとして、適格販売により収入を得ています。リンク先の価格・在庫は Amazon 側の表示に従います。",
+    },
+    support: {
+      title: "役に立ったら、開発を一杯ぶん支えてください",
+      body: "広告は出していません。予測ツールの改善費に充てます。",
+      cta: "Ko-fi で支援する",
     },
     distances: {
       "3k": "3km",
@@ -599,6 +628,20 @@ export const DICT: Record<Locale, Dict> = {
       disclaimer:
         "Predictions are estimates only. Weather, course, condition and training will move the actual time.",
       citation: "Models: Peter Riegel (1981) / Jack Daniels VDOT",
+      supportCta: "Support development (Ko-fi)",
+      affiliateDisclosure: "As an Amazon Associate I earn from qualifying purchases.",
+    },
+    gear: {
+      title: "Shoes for this training tier",
+      body: "Browse Amazon for running shoes matched to your predicted pace band (external site).",
+      cta: "Search shoes on Amazon",
+      disclosure:
+        "As an Amazon Associate I earn from qualifying purchases. Price and stock are shown by Amazon.",
+    },
+    support: {
+      title: "If this helped, fuel the next improvement",
+      body: "No ads. Tips go to keeping the calculator accurate and fast.",
+      cta: "Support on Ko-fi",
     },
     distances: {
       "3k": "3K",
@@ -842,6 +885,20 @@ export const DICT: Record<Locale, Dict> = {
       disclaimer:
         "예측값은 어디까지나 기준입니다. 기상 · 코스 · 컨디션 · 트레이닝 상태에 따라 실제 기록은 변동합니다.",
       citation: "모델: Peter Riegel (1981) / Jack Daniels VDOT",
+      supportCta: "개발 지원하기 (Ko-fi)",
+      affiliateDisclosure: "Amazon 어소시에이트로서 적격 판매를 통해 수입을 얻을 수 있습니다.",
+    },
+    gear: {
+      title: "이 예측대에 맞는 슈즈 찾기",
+      body: "목표 타임대에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트).",
+      cta: "Amazon에서 슈즈 보기",
+      disclosure:
+        "Amazon 어소시에이트로서 적격 판매를 통해 수입을 얻습니다. 가격·재고는 Amazon 표시를 따릅니다.",
+    },
+    support: {
+      title: "도움이 됐다면 개발을 한 잔 응원해주세요",
+      body: "광고는 없습니다. 예측 도구 개선비에 씁니다.",
+      cta: "Ko-fi로 지원하기",
     },
     distances: {
       "3k": "3km",
