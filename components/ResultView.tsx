@@ -104,6 +104,14 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
         )}
       </section>
 
+      {/* Env-gated: renders null until NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG is set. */}
+      <GearAffiliate
+        locale={locale}
+        tier={planMeta.key}
+        tierLabel={tierText.tier}
+        placement="hero"
+      />
+
       <section className="space-y-3">
         <h2 className="text-lg font-bold text-(--color-accent-soft)">{t.result.threeModelTitle}</h2>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -202,9 +210,6 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
         </ul>
         <p className="text-[11px] leading-relaxed text-(--color-text-muted)">{tierText.comment}</p>
       </section>
-
-      {/* Env-gated: renders null until NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG is set. */}
-      <GearAffiliate locale={locale} tier={planMeta.key} />
 
       <section className="space-y-3">
         <h2 className="text-sm font-bold text-(--color-accent-soft)">{t.result.shareTitle}</h2>
