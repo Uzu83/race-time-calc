@@ -56,9 +56,14 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
   const fastest = preds.reduce((a, b) => (a.seconds < b.seconds ? a : b));
   const slowest = preds.reduce((a, b) => (a.seconds > b.seconds ? a : b));
 
+  const subTargetDelta = sub
+    ? sub.achieved
+      ? formatSignedDelta(sub.gapSec)
+      : formatSignedDelta(sub.gapSec).replace(/^\+/, "")
+    : null;
   const subTargetText = sub
     ? interpolate(sub.achieved ? t.subTargets.inReach : t.subTargets.awayBy, {
-        delta: formatSignedDelta(sub.gapSec),
+        delta: subTargetDelta ?? "",
       })
     : null;
   const subTargetLabel = sub ? t.subTargets[sub.target.key as keyof typeof t.subTargets] : null;
@@ -73,11 +78,31 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
           <span className="font-mono">{formatTime(input.fromTimeSec, { forceHours: true })}</span> →{" "}
           {t.distances[input.toKey]}
         </div>
-        <div className="mt-2 flex flex-wrap items-baseline gap-3">
-          <h1 className="glow-pulse bg-gradient-to-r from-(--color-accent) to-(--color-victory) bg-clip-text font-mono text-5xl font-extrabold tracking-tight text-transparent md:text-7xl">
-            {formatTime(consensus, { forceHours: true })}
-          </h1>
-          <span className="text-sm text-(--color-text-muted)">{t.result.threeModelAvg}</span>
+        <div className="mt-4 grid grid-cols-1 gap-4 text-center sm:grid-cols-3 sm:gap-4">
+          <div>
+            <div className="text-[10px] font-semibold tracking-wide text-emerald-400/90 sm:text-xs">
+              {t.result.optimistic}
+            </div>
+            <div className="mt-1 font-mono text-lg font-bold text-emerald-300/90 sm:text-xl md:text-2xl">
+              {formatTime(fastest.seconds, { forceHours: true })}
+            </div>
+          </div>
+          <div>
+            <div className="text-[10px] font-semibold tracking-wide text-(--color-victory)/90 sm:text-xs">
+              {t.result.median}
+            </div>
+            <h1 className="glow-pulse mt-1 bg-gradient-to-r from-(--color-accent) to-(--color-victory) bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl md:text-6xl">
+              {formatTime(consensus, { forceHours: true })}
+            </h1>
+          </div>
+          <div>
+            <div className="text-[10px] font-semibold tracking-wide text-rose-400/90 sm:text-xs">
+              {t.result.conservative}
+            </div>
+            <div className="mt-1 font-mono text-lg font-bold text-rose-300/90 sm:text-xl md:text-2xl">
+              {formatTime(slowest.seconds, { forceHours: true })}
+            </div>
+          </div>
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-(--color-text-muted)">
           {locale === "ja" && <span>{formatTimeJa(consensus)}</span>}
@@ -103,14 +128,6 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
           </div>
         )}
       </section>
-
-      {/* Env-gated: renders null until NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG is set. */}
-      <GearAffiliate
-        locale={locale}
-        tier={planMeta.key}
-        tierLabel={tierText.tier}
-        placement="hero"
-      />
 
       <section className="space-y-3">
         <h2 className="text-lg font-bold text-(--color-accent-soft)">{t.result.threeModelTitle}</h2>
@@ -159,6 +176,14 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
       <EquivalentTimes rows={equivalents} highlightKey={input.toKey} />
 
       <TrainingPaces vdot={vdot} paces={paces} />
+
+      {/* Env-gated: renders null until NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG is set. */}
+      <GearAffiliate
+        locale={locale}
+        tier={planMeta.key}
+        tierLabel={tierText.tier}
+        placement="training"
+      />
 
       {isRaceDistance && <RacePlan totalKm={toMeters / 1000} totalSec={consensus} />}
 

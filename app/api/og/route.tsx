@@ -24,14 +24,21 @@ export async function GET(request: Request): Promise<Response> {
   const toMeters = metersOf(decoded.toKey);
   const preds = predictAll(fromMeters, decoded.fromTimeSec, toMeters);
   const consensus = consensusSeconds(preds);
+  const fastest = preds.reduce((a, b) => (a.seconds < b.seconds ? a : b));
+  const slowest = preds.reduce((a, b) => (a.seconds > b.seconds ? a : b));
   const sub = nextSubTargetGap(consensus, toMeters);
   const fromShort = t.distances[decoded.fromKey];
   const toShort = t.distances[decoded.toKey];
 
   const subLabel = sub ? t.subTargets[sub.target.key as keyof typeof t.subTargets] : null;
+  const subDelta = sub
+    ? sub.achieved
+      ? formatSignedDelta(sub.gapSec)
+      : formatSignedDelta(sub.gapSec).replace(/^\+/, "")
+    : "";
   const subText = sub
     ? interpolate(sub.achieved ? t.subTargets.inReach : t.subTargets.awayBy, {
-        delta: formatSignedDelta(sub.gapSec),
+        delta: subDelta,
       })
     : "";
 
@@ -80,6 +87,18 @@ export async function GET(request: Request): Promise<Response> {
           }}
         >
           {formatTime(consensus, { forceHours: true })}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            fontSize: 28,
+            color: "#a3afc6",
+            marginTop: 14,
+            gap: 8,
+          }}
+        >
+          {t.result.optimistic} {formatTime(fastest.seconds, { forceHours: true })} –{" "}
+          {t.result.conservative} {formatTime(slowest.seconds, { forceHours: true })}
         </div>
         {sub && subLabel && (
           <div
