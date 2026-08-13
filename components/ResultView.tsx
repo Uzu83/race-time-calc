@@ -78,7 +78,7 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
           <span className="font-mono">{formatTime(input.fromTimeSec, { forceHours: true })}</span> →{" "}
           {t.distances[input.toKey]}
         </div>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center sm:gap-4">
+        <div className="mt-4 grid grid-cols-1 gap-4 text-center sm:grid-cols-3 sm:gap-4">
           <div>
             <div className="text-[10px] font-semibold tracking-wide text-emerald-400/90 sm:text-xs">
               {t.result.optimistic}
