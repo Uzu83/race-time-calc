@@ -228,7 +228,7 @@ export const DICT: Record<Locale, Dict> = {
     },
     result: {
       optimistic: "楽観",
-      median: "中央",
+      median: "平均",
       conservative: "保守",
       threeModelAvg: "3モデル平均",
       pacePerKm: "推奨1kmペース",
@@ -495,7 +495,7 @@ export const DICT: Record<Locale, Dict> = {
     },
     result: {
       optimistic: "Optimistic",
-      median: "Median",
+      median: "Average",
       conservative: "Conservative",
       threeModelAvg: "3-model average",
       pacePerKm: "Recommended pace",
@@ -762,7 +762,7 @@ export const DICT: Record<Locale, Dict> = {
     },
     result: {
       optimistic: "낙관",
-      median: "중앙",
+      median: "평균",
       conservative: "보수",
       threeModelAvg: "3모델 평균",
       pacePerKm: "추천 1km 페이스",

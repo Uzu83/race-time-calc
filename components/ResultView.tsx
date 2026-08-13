@@ -94,9 +94,6 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
             <h1 className="glow-pulse mt-1 bg-gradient-to-r from-(--color-accent) to-(--color-victory) bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl md:text-6xl">
               {formatTime(consensus, { forceHours: true })}
             </h1>
-            <span className="mt-0.5 block text-[10px] text-(--color-text-muted)">
-              {t.result.threeModelAvg}
-            </span>
           </div>
           <div>
             <div className="text-[10px] font-semibold tracking-wide text-rose-400/90 sm:text-xs">
