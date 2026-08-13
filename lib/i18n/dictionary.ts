@@ -39,6 +39,9 @@ interface Dict {
     inputPaceHint: string;
   };
   result: {
+    optimistic: string;
+    median: string;
+    conservative: string;
     threeModelAvg: string;
     pacePerKm: string;
     threeModelTitle: string;
@@ -224,6 +227,9 @@ export const DICT: Record<Locale, Dict> = {
       inputPaceHint: "例: 0:45:30 / 45:30 / 1:30:45",
     },
     result: {
+      optimistic: "楽観",
+      median: "中央",
+      conservative: "保守",
       threeModelAvg: "3モデル平均",
       pacePerKm: "推奨1kmペース",
       threeModelTitle: "3モデル並列表示",
@@ -297,7 +303,7 @@ export const DICT: Record<Locale, Dict> = {
       "halfSub1.75": "ハーフ サブ1:45",
       "halfSub1.5": "ハーフ サブ1:30",
       inReach: "を {{delta}} で射程内",
-      awayBy: "まであと {{delta}}",
+      awayBy: "には {{delta}} の短縮が必要",
     },
     pace: {
       title: "ペース計算",
@@ -488,6 +494,9 @@ export const DICT: Record<Locale, Dict> = {
       inputPaceHint: "e.g. 0:45:30 / 45:30 / 1:30:45",
     },
     result: {
+      optimistic: "Optimistic",
+      median: "Median",
+      conservative: "Conservative",
       threeModelAvg: "3-model average",
       pacePerKm: "Recommended pace",
       threeModelTitle: "Three models in parallel",
@@ -564,7 +573,7 @@ export const DICT: Record<Locale, Dict> = {
       "halfSub1.75": "Half Sub-1:45",
       "halfSub1.5": "Half Sub-1:30",
       inReach: "in reach by {{delta}}",
-      awayBy: "{{delta}} away from",
+      awayBy: "— need to shorten by {{delta}}",
     },
     pace: {
       title: "Pace Calculator",
@@ -752,6 +761,9 @@ export const DICT: Record<Locale, Dict> = {
       inputPaceHint: "예: 0:45:30 / 45:30 / 1:30:45",
     },
     result: {
+      optimistic: "낙관",
+      median: "중앙",
+      conservative: "보수",
       threeModelAvg: "3모델 평균",
       pacePerKm: "추천 1km 페이스",
       threeModelTitle: "3개 모델 병렬 표시",
@@ -824,7 +836,7 @@ export const DICT: Record<Locale, Dict> = {
       "halfSub1.75": "하프 서브1:45",
       "halfSub1.5": "하프 서브1:30",
       inReach: "을(를) {{delta}} 차이로 사정권",
-      awayBy: "까지 {{delta}}",
+      awayBy: "까지 {{delta}} 단축 필요",
     },
     pace: {
       title: "페이스 계산",
