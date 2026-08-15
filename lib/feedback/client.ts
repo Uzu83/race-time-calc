@@ -4,6 +4,7 @@
  * 手順の正: ~/development/projects/feedback-platform/docs/CONNECT.md
  *
  * WHY vendor 経由か: file:../feedback-platform は Vercel CI で親ディレクトリが無く壊れる。
+ * WHY 静的 process.env.NEXT_PUBLIC_* か: Next.js クライアントは動的 process.env[name] を埋め込めない（GPT F001）。
  */
 import type { FeedbackKind } from "@tosagiken/feedback-core";
 import {
@@ -19,26 +20,57 @@ export type RaceFeedbackKind = (typeof FEEDBACK_KINDS)[number];
 const PRODUCT = "race-time-calc";
 const SCREEN = "feedback-modal";
 
-function env(name: string): string | undefined {
-  const v = process.env[name];
-  return typeof v === "string" && v.length > 0 ? v : undefined;
+type FeedbackFirebaseConfig = {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  appId: string;
+  messagingSenderId: string;
+  storageBucket: string;
+};
+
+function readPublic(value: string | undefined): string | undefined {
+  return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+/**
+ * Static NEXT_PUBLIC_* reads only — required for client bundle inlining.
+ */
+export function getFeedbackFirebaseConfig(): FeedbackFirebaseConfig | null {
+  const apiKey = readPublic(process.env.NEXT_PUBLIC_FEEDBACK_FIREBASE_API_KEY);
+  const authDomain = readPublic(process.env.NEXT_PUBLIC_FEEDBACK_FIREBASE_AUTH_DOMAIN);
+  const projectId = readPublic(process.env.NEXT_PUBLIC_FEEDBACK_FIREBASE_PROJECT_ID);
+  const appId = readPublic(process.env.NEXT_PUBLIC_FEEDBACK_FIREBASE_APP_ID);
+  const messagingSenderId = readPublic(
+    process.env.NEXT_PUBLIC_FEEDBACK_FIREBASE_MESSAGING_SENDER_ID,
+  );
+  const storageBucket = readPublic(process.env.NEXT_PUBLIC_FEEDBACK_FIREBASE_STORAGE_BUCKET);
+  if (!apiKey || !authDomain || !projectId || !appId || !messagingSenderId || !storageBucket) {
+    return null;
+  }
+  return { apiKey, authDomain, projectId, appId, messagingSenderId, storageBucket };
 }
 
 /** Firebase Web config が揃っているか。 */
 export function isFeedbackBackendConfigured(): boolean {
-  return Boolean(
-    env("NEXT_PUBLIC_FEEDBACK_FIREBASE_API_KEY") &&
-      env("NEXT_PUBLIC_FEEDBACK_FIREBASE_AUTH_DOMAIN") &&
-      env("NEXT_PUBLIC_FEEDBACK_FIREBASE_PROJECT_ID") &&
-      env("NEXT_PUBLIC_FEEDBACK_FIREBASE_APP_ID") &&
-      env("NEXT_PUBLIC_FEEDBACK_FIREBASE_MESSAGING_SENDER_ID") &&
-      env("NEXT_PUBLIC_FEEDBACK_FIREBASE_STORAGE_BUCKET"),
-  );
+  return getFeedbackFirebaseConfig() !== null;
 }
 
 /** Production だけ NEXT_PUBLIC_FEEDBACK_TARGET=prod。それ以外は省略 → feedback_dev。 */
 export function resolveFeedbackTarget(): FeedbackTarget | undefined {
-  return env("NEXT_PUBLIC_FEEDBACK_TARGET") === "prod" ? "prod" : undefined;
+  return readPublic(process.env.NEXT_PUBLIC_FEEDBACK_TARGET) === "prod" ? "prod" : undefined;
+}
+
+/**
+ * Vercel Production（ビルド時 VERCEL_ENV=production）では target=prod 必須。
+ * 欠けると UI を出さず feedback_dev への誤送信を防ぐ（GPT F002）。
+ */
+export function isFeedbackUiAllowed(): boolean {
+  if (!isFeedbackBackendConfigured()) return false;
+  if (process.env.VERCEL_ENV === "production" && resolveFeedbackTarget() !== "prod") {
+    return false;
+  }
+  return true;
 }
 
 export type FeedbackSubmitInput = {
@@ -53,14 +85,11 @@ let dbCache: Firestore | null = null;
 
 function getDb(): Firestore {
   if (dbCache) return dbCache;
-  const { db } = initFeedbackFirestore({
-    apiKey: env("NEXT_PUBLIC_FEEDBACK_FIREBASE_API_KEY")!,
-    authDomain: env("NEXT_PUBLIC_FEEDBACK_FIREBASE_AUTH_DOMAIN")!,
-    projectId: env("NEXT_PUBLIC_FEEDBACK_FIREBASE_PROJECT_ID")!,
-    appId: env("NEXT_PUBLIC_FEEDBACK_FIREBASE_APP_ID")!,
-    messagingSenderId: env("NEXT_PUBLIC_FEEDBACK_FIREBASE_MESSAGING_SENDER_ID")!,
-    storageBucket: env("NEXT_PUBLIC_FEEDBACK_FIREBASE_STORAGE_BUCKET")!,
-  });
+  const config = getFeedbackFirebaseConfig();
+  if (!config) {
+    throw new Error("feedback firebase config missing");
+  }
+  const { db } = initFeedbackFirestore(config);
   dbCache = db;
   return db;
 }
@@ -80,7 +109,7 @@ export async function submitFeedback(input: FeedbackSubmitInput): Promise<Feedba
     return { ok: false, error: "empty" };
   }
 
-  if (!isFeedbackBackendConfigured()) {
+  if (!isFeedbackUiAllowed()) {
     return { ok: false, error: "unavailable" };
   }
 

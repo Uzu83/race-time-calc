@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   FEEDBACK_KINDS,
-  isFeedbackBackendConfigured,
+  isFeedbackUiAllowed,
   type RaceFeedbackKind,
   submitFeedback,
 } from "@/lib/feedback/client";
@@ -22,7 +22,7 @@ export default function FeedbackEntry() {
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
-  if (!isFeedbackBackendConfigured()) return null;
+  if (!isFeedbackUiAllowed()) return null;
 
   const kindLabel = (k: RaceFeedbackKind): string => {
     switch (k) {

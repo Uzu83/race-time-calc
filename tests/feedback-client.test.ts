@@ -37,6 +37,16 @@ describe("feedback client", () => {
     expect(submitFeedbackDoc).not.toHaveBeenCalled();
   });
 
+  it("hides UI on Vercel production without FEEDBACK_TARGET=prod", async () => {
+    stubFeedbackEnv();
+    vi.stubEnv("VERCEL_ENV", "production");
+    const { isFeedbackUiAllowed, submitFeedback, resetFeedbackDbCacheForTests } = await load();
+    resetFeedbackDbCacheForTests();
+    expect(isFeedbackUiAllowed()).toBe(false);
+    const r = await submitFeedback({ kind: "bug", message: "should not send" });
+    expect(r).toEqual({ ok: false, error: "unavailable" });
+  });
+
   it("submitFeedback returns empty when message blank", async () => {
     stubFeedbackEnv();
     const { submitFeedback, resetFeedbackDbCacheForTests } = await load();
@@ -68,9 +78,11 @@ describe("feedback client", () => {
   it("submitFeedback uses prod target when env is prod", async () => {
     stubFeedbackEnv();
     vi.stubEnv("NEXT_PUBLIC_FEEDBACK_TARGET", "prod");
+    vi.stubEnv("VERCEL_ENV", "production");
     submitFeedbackDoc.mockResolvedValue({ ok: true, id: "prod1" });
-    const { submitFeedback, resetFeedbackDbCacheForTests } = await load();
+    const { submitFeedback, isFeedbackUiAllowed, resetFeedbackDbCacheForTests } = await load();
     resetFeedbackDbCacheForTests();
+    expect(isFeedbackUiAllowed()).toBe(true);
     await submitFeedback({ kind: "feature", message: "ハーフも欲しい" });
     const opts = submitFeedbackDoc.mock.calls[0]![2];
     expect(opts).toEqual({ target: "prod" });

@@ -12,7 +12,8 @@
 - Added: all six `NEXT_PUBLIC_FEEDBACK_FIREBASE_*` for **Production** and **Development**.
 - Preview: agent CLI requires an explicit git-branch; production branch cannot be used for Preview vars; feature branch must exist on remote first. **After push**, run:
   `vercel env add NEXT_PUBLIC_FEEDBACK_FIREBASE_* preview auto/feat-feedback-analytics-2026-08-15 --value … --yes --force` ×6
-- `NEXT_PUBLIC_FEEDBACK_TARGET=prod` **not** set (attached plan out of scope).
+- `NEXT_PUBLIC_FEEDBACK_TARGET=prod` set on **Production** (GPT F002 fix; Preview/Dev omit → feedback_dev).
+- Code: static `NEXT_PUBLIC_*` reads (F001); `isFeedbackUiAllowed()` blocks Vercel Production without `target=prod`.
 
 ## GSC
 - Verification meta present in `app/layout.tsx`.
