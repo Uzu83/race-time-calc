@@ -11,6 +11,23 @@ interface Dict {
     pace: string;
     about: string;
   };
+  feedback: {
+    open: string;
+    title: string;
+    kindLabel: string;
+    kindBug: string;
+    kindFeature: string;
+    kindUx: string;
+    kindOther: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    submit: string;
+    sending: string;
+    thanks: string;
+    error: string;
+    errorEmpty: string;
+    close: string;
+  };
   home: {
     titleA: string;
     titleHighlight: string;
@@ -198,6 +215,23 @@ export const DICT: Record<Locale, Dict> = {
         "5K・10K・ハーフの記録から、3つの予測モデル (Riegel・VDOT・Riegel-Elite) でフルマラソンタイムを予測。サブ4・サブ3.5・サブ3 達成までの差を可視化。SNSシェア用の結果カードも生成できます。",
     },
     nav: { home: "予測", pace: "ペース計算", about: "ツールについて" },
+    feedback: {
+      open: "フィードバック",
+      title: "フィードバックを送る",
+      kindLabel: "種類",
+      kindBug: "バグ報告",
+      kindFeature: "機能のリクエスト",
+      kindUx: "使いやすさ",
+      kindOther: "その他",
+      messageLabel: "内容",
+      messagePlaceholder: "気づいた点を書いてください（返信はできません）",
+      submit: "送信する",
+      sending: "送信中…",
+      thanks: "送信しました。ありがとうございます。",
+      error: "送信に失敗しました。時間をおいて再度お試しください。",
+      errorEmpty: "内容を入力してください。",
+      close: "閉じる",
+    },
     home: {
       titleA: "5K・10K・ハーフから",
       titleHighlight: "フルマラソンタイム",
@@ -380,12 +414,11 @@ export const DICT: Record<Locale, Dict> = {
         "Amazonのアソシエイトとして、マラソンタイム予測は適格販売により収入を得ています。",
     },
     gear: {
-      title: "予測タイム帯に合うシューズを探す",
+      title: "このタイム帯のシューズを Amazon で探す",
       body: "目標タイム帯に合わせたランニングシューズを Amazon で検索します（外部サイト・PR）。",
-      bodyTier:
-        "{{tier}}の目標に合わせたランニングシューズを Amazon で検索します（外部サイト・PR）。",
+      bodyTier: "{{tier}}向けのランニングシューズ候補を Amazon で開きます（外部サイト・PR）。",
       cta: "Amazon でシューズを見る",
-      ctaTier: "{{tier}}向けシューズを Amazon で見る",
+      ctaTier: "{{tier}}向けシューズを Amazon で開く",
       disclosure:
         "【PR】Amazonのアソシエイトとして、マラソンタイム予測は適格販売により収入を得ています。リンク先の価格・在庫は Amazon 側の表示に従います。",
     },
@@ -465,6 +498,23 @@ export const DICT: Record<Locale, Dict> = {
         "Predict marathon time from a 5K, 10K or Half result using three parallel models (Riegel · VDOT · Riegel-Elite). See how close you are to Sub-4 / Sub-3:30 / Sub-3, plus VDOT training paces, splits and a sharable result card.",
     },
     nav: { home: "Predict", pace: "Pace Calculator", about: "About" },
+    feedback: {
+      open: "Feedback",
+      title: "Send feedback",
+      kindLabel: "Type",
+      kindBug: "Bug report",
+      kindFeature: "Feature request",
+      kindUx: "Usability",
+      kindOther: "Other",
+      messageLabel: "Message",
+      messagePlaceholder: "Tell us what you noticed (we cannot reply by email)",
+      submit: "Send",
+      sending: "Sending…",
+      thanks: "Thanks — your feedback was sent.",
+      error: "Could not send. Please try again later.",
+      errorEmpty: "Please enter a message.",
+      close: "Close",
+    },
     home: {
       titleA: "From a 5K, 10K or Half,",
       titleHighlight: "predict your marathon",
@@ -649,11 +699,11 @@ export const DICT: Record<Locale, Dict> = {
         "As an Amazon Associate, Marathon Time Predictor earns from qualifying purchases.",
     },
     gear: {
-      title: "Shoes for your predicted pace band",
+      title: "Find shoes for this pace band on Amazon",
       body: "Browse Amazon for running shoes matched to your predicted pace band (external site · sponsored).",
-      bodyTier: "Browse running shoes matched to {{tier}} on Amazon (external site · sponsored).",
+      bodyTier: "Open running-shoe picks for {{tier}} on Amazon (external site · sponsored).",
       cta: "Search shoes on Amazon",
-      ctaTier: "Shop {{tier}} shoes on Amazon",
+      ctaTier: "Open {{tier}} shoes on Amazon",
       disclosure:
         "Sponsored: As an Amazon Associate, Marathon Time Predictor earns from qualifying purchases. Price and stock are shown by Amazon.",
     },
@@ -732,6 +782,23 @@ export const DICT: Record<Locale, Dict> = {
         "5K, 10K, 하프 마라톤 기록을 입력하면 Riegel · VDOT · Riegel-Elite 3개 모델로 마라톤 기록을 병렬 예측합니다. 서브4 · 서브3:30 · 서브3 까지의 차이, 추천 페이스, VDOT 트레이닝 페이스를 함께 표시합니다.",
     },
     nav: { home: "예측", pace: "페이스 계산", about: "도구 안내" },
+    feedback: {
+      open: "피드백",
+      title: "피드백 보내기",
+      kindLabel: "종류",
+      kindBug: "버그 제보",
+      kindFeature: "기능 요청",
+      kindUx: "사용성",
+      kindOther: "기타",
+      messageLabel: "내용",
+      messagePlaceholder: "気づ은 점을 적어 주세요 (이메일 회신은 불가)",
+      submit: "보내기",
+      sending: "전송 중…",
+      thanks: "전송했습니다. 감사합니다.",
+      error: "전송에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+      errorEmpty: "내용을 입력해 주세요.",
+      close: "닫기",
+    },
     home: {
       titleA: "5K · 10K · 하프 기록으로",
       titleHighlight: "마라톤 기록",
@@ -912,11 +979,11 @@ export const DICT: Record<Locale, Dict> = {
         "Amazon 어소시에이트로서 마라톤 타임 예측은 적격 판매를 통해 수입을 얻습니다.",
     },
     gear: {
-      title: "예측 타임대에 맞는 슈즈 찾기",
+      title: "이 타임대의 슈즈를 Amazon에서 찾기",
       body: "목표 타임대에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트·PR).",
-      bodyTier: "{{tier}} 목표에 맞춘 러닝화를 Amazon에서 검색합니다 (외부 사이트·PR).",
+      bodyTier: "{{tier}}용 러닝화 후보를 Amazon에서 엽니다 (외부 사이트·PR).",
       cta: "Amazon에서 슈즈 보기",
-      ctaTier: "{{tier}}용 슈즈를 Amazon에서 보기",
+      ctaTier: "{{tier}}용 슈즈를 Amazon에서 열기",
       disclosure:
         "[PR] Amazon 어소시에이트로서 마라톤 타임 예측은 적격 판매를 통해 수입을 얻습니다. 가격·재고는 Amazon 표시를 따릅니다.",
     },

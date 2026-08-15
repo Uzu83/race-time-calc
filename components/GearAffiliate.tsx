@@ -29,13 +29,13 @@ export default function GearAffiliate({ locale, tier, tierLabel, placement = "he
 
   return (
     <section
-      className="rounded-2xl border border-(--color-accent)/35 bg-gradient-to-br from-(--color-accent)/12 via-black/20 to-(--color-rune)/8 p-4 md:p-5"
+      className="rounded-2xl border-2 border-(--color-accent)/50 bg-gradient-to-br from-(--color-accent)/18 via-black/25 to-(--color-rune)/10 p-4 shadow-[0_0_24px_-8px] shadow-(--color-accent)/25 md:p-5"
       aria-label={t.gear.title}
     >
       <p className="text-xs font-semibold leading-relaxed text-(--color-accent-soft)">
         {t.gear.disclosure}
       </p>
-      <h2 className="mt-3 text-sm font-bold text-(--color-accent-soft)">{t.gear.title}</h2>
+      <h2 className="mt-3 text-base font-bold text-(--color-accent-soft)">{t.gear.title}</h2>
       <p className="mt-1 text-xs leading-relaxed text-(--color-text-muted)">{body}</p>
       <GearAffiliateLink href={href} label={cta} tier={tier} placement={placement} />
     </section>

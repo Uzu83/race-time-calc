@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import FeedbackEntry from "@/components/FeedbackEntry";
 import { useI18n } from "@/lib/i18n/Provider";
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -16,7 +17,7 @@ export default function HeaderNav() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-(--color-bg)/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-4xl items-center gap-4 px-4 py-3">
+      <div className="mx-auto flex max-w-4xl items-center gap-2 px-4 py-3 sm:gap-4">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-1.5 text-lg font-bold tracking-tight text-(--color-accent)"
@@ -45,6 +46,7 @@ export default function HeaderNav() {
             );
           })}
         </nav>
+        <FeedbackEntry />
         <LanguageSwitcher />
       </div>
     </header>

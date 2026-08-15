@@ -1,0 +1,19 @@
+{
+  "name": "@tosagiken/feedback-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "validateFeedback \u3092\u901a\u3057\u305f\u5024\u3060\u3051\u3092 Firestore \u306b create \u3059\u308b Web \u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u3002read/update/delete \u306f\u6301\u305f\u306a\u3044\u3002",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@tosagiken/feedback-core": "file:../feedback-core",
+    "firebase": "^12.6.0"
+  }
+}
