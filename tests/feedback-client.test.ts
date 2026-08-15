@@ -39,7 +39,7 @@ describe("feedback client", () => {
 
   it("hides UI on Vercel production without FEEDBACK_TARGET=prod", async () => {
     stubFeedbackEnv();
-    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_VERCEL_ENV", "production");
     const { isFeedbackUiAllowed, submitFeedback, resetFeedbackDbCacheForTests } = await load();
     resetFeedbackDbCacheForTests();
     expect(isFeedbackUiAllowed()).toBe(false);
@@ -78,7 +78,7 @@ describe("feedback client", () => {
   it("submitFeedback uses prod target when env is prod", async () => {
     stubFeedbackEnv();
     vi.stubEnv("NEXT_PUBLIC_FEEDBACK_TARGET", "prod");
-    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_VERCEL_ENV", "production");
     submitFeedbackDoc.mockResolvedValue({ ok: true, id: "prod1" });
     const { submitFeedback, isFeedbackUiAllowed, resetFeedbackDbCacheForTests } = await load();
     resetFeedbackDbCacheForTests();

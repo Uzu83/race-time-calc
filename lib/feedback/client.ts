@@ -62,12 +62,13 @@ export function resolveFeedbackTarget(): FeedbackTarget | undefined {
 }
 
 /**
- * Vercel Production（ビルド時 VERCEL_ENV=production）では target=prod 必須。
- * 欠けると UI を出さず feedback_dev への誤送信を防ぐ（GPT F002）。
+ * Vercel Production では target=prod 必須（欠けると UI を閉じ feedback_dev 誤送信を防ぐ）。
+ * WHY NEXT_PUBLIC_VERCEL_ENV: 素の VERCEL_ENV はクライアントに載らない（GPT r2 F001）。
+ * next.config.mjs でビルド時に写す。
  */
 export function isFeedbackUiAllowed(): boolean {
   if (!isFeedbackBackendConfigured()) return false;
-  if (process.env.VERCEL_ENV === "production" && resolveFeedbackTarget() !== "prod") {
+  if (process.env.NEXT_PUBLIC_VERCEL_ENV === "production" && resolveFeedbackTarget() !== "prod") {
     return false;
   }
   return true;
