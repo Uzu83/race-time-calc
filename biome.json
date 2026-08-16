@@ -8,7 +8,10 @@
       "**/*.mjs",
       "!!**/node_modules",
       "!!**/.next",
-      "!!**/dist"
+      "!!**/dist",
+      "!!**/vendor",
+      "!!**/.ai",
+      "!!**/.vercel"
     ],
     "ignoreUnknown": true
   },

@@ -1,0 +1,15 @@
+{
+  "name": "@tosagiken/feedback-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "\u5168\u30d7\u30ed\u30c0\u30af\u30c8\u5171\u901a\u306e\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u5951\u7d04\uff08\u30b9\u30ad\u30fc\u30de\u30fb\u691c\u8a3c\u30fb\u540c\u610f\uff09\u3002UI \u3082 DB \u3082\u77e5\u3089\u306a\u3044\u7d14\u7c8b\u5c64\u3002",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ]
+}

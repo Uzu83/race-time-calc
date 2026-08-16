@@ -2,9 +2,11 @@ import Link from "next/link";
 import EquivalentTimes from "@/components/EquivalentTimes";
 import GearAffiliate from "@/components/GearAffiliate";
 import HeatAdjuster from "@/components/HeatAdjuster";
+import KofiLink from "@/components/KofiLink";
 import PaceChart from "@/components/PaceChart";
 import PopularLandings from "@/components/PopularLandings";
 import RacePlan from "@/components/RacePlan";
+import ResultViewTracker from "@/components/ResultViewTracker";
 import ShareButtons from "@/components/ShareButtons";
 import TrainingPaces from "@/components/TrainingPaces";
 import { metersOf, paceSecondsPerKmToString } from "@/lib/distance";
@@ -72,6 +74,7 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
 
   return (
     <div className="space-y-6">
+      <ResultViewTracker fromKey={input.fromKey} toKey={input.toKey} />
       <section className="fade-up rounded-3xl border border-(--color-accent)/40 bg-gradient-to-br from-(--color-accent)/15 via-(--color-accent)/5 to-(--color-rune)/5 p-6 md:p-8">
         <div className="text-xs text-(--color-text-muted)">
           {t.distances[input.fromKey]}{" "}
@@ -252,14 +255,12 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
       <section className="rounded-2xl border border-white/10 bg-black/15 p-4">
         <h2 className="text-sm font-bold text-(--color-accent-soft)">{t.support.title}</h2>
         <p className="mt-1 text-xs leading-relaxed text-(--color-text-muted)">{t.support.body}</p>
-        <a
+        <KofiLink
           href={KOFI_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          label={t.support.cta}
+          surface="result"
           className="mt-3 inline-flex text-sm font-semibold text-(--color-rune) underline-offset-2 hover:underline"
-        >
-          {t.support.cta}
-        </a>
+        />
       </section>
 
       <PopularLandings
