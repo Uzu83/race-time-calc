@@ -1,0 +1,96 @@
+task_id: RT-QA-ISSUES
+title: GitHub Issue #7 Feedback モーダル + #8 Average クリップ修正
+
+intent:
+  actors: [end_user]
+  problem: |
+    #7: ヘッダーの Feedback モーダルが閉じられない（Esc / 背景 / 閉じるが無効）。
+    overlay が sticky+backdrop-blur ヘッダー内にあり、ダイアログが viewport 外になる。
+    #8: 結果ページ Hero の Average 時刻がデスクトップ幅で右端クリップされ最終桁が読めない。
+  desired_outcome: |
+    Feedback は top layer で表示され、Esc・背景・閉じるで閉じられる。
+    Average（中央値）の H:MM:SS が 768px 以上でも全桁見える。390px の縦並びは維持。
+  unknowns: []
+
+desired_state: |
+  Feedback パネルがヘッダー高さに閉じ込められず viewport 中央に見える。
+  Esc・閉じるボタン・backdrop のいずれかで閉じられる。
+  Firebase 未設定時はオープナー非表示のまま（fail-closed）。
+  結果ヒーローの中央 Average がデスクトップでクリップされず全桁読める。
+  390px では従来どおり縦並び。
+
+constraints:
+  - 予測式（Riegel / VDOT）を変えない
+  - アフィリエイト・Firebase 送信ロジックを変えない
+  - 新規 UI ライブラリ / 依存を追加しない
+  - LanguageSwitcher の fixed overlay は今回触らない
+  - OG 画像レイアウトは対象外
+
+out_of_scope:
+  - LanguageSwitcher の containing-block 修正
+  - OG 画像のヒーロー再設計
+  - Feedback 送信 API / env ゲートの変更
+
+acceptance_criteria:
+  - id: ac-7a
+    statement: Feedback パネルがヘッダー高さに閉じ込められず、viewport 上で見える（dialog open / top layer）
+    how_to_verify: component test で dialog[open]。ブラウザがあればヘッダーから開いて目視
+  - id: ac-7b
+    statement: Esc・閉じる・backdrop のいずれかで閉じ、open が false になる
+    how_to_verify: tests/feedback-entry.test.tsx
+  - id: ac-7c
+    statement: Firebase 未設定（isFeedbackUiAllowed false）時はオープナー非表示のまま
+    how_to_verify: feedback-entry test + 既存 feedback-client tests
+  - id: ac-8a
+    statement: 768px 以上で Average の H:MM:SS 全桁が見える（scrollWidth <= clientWidth 相当）
+    how_to_verify: ブラウザで /result/5k-1500-full と /result/10k-3000-full を 768–1280px
+  - id: ac-8b
+    statement: 390px の縦並びヒーローが回帰しない
+    how_to_verify: ブラウザ 390px
+  - id: ac-r
+    statement: pnpm test / typecheck / biome が緑。予測秒は不変
+    how_to_verify: quality-gate または pnpm test && pnpm typecheck && pnpm check
+
+exploration:
+  entrypoints:
+    - components/FeedbackEntry.tsx
+    - components/HeaderNav.tsx
+    - components/ResultView.tsx
+  similar_implementations:
+    - ../pen-light-color/components/feedback/FeedbackEntry.tsx（native dialog + showModal）
+  landmines:
+    - hooks は isFeedbackUiAllowed early return より前に置く（Rules of Hooks）
+    - header の backdrop-blur が fixed の containing block になる
+    - bg-clip-text は要素ボックス外の桁を透明にする
+    - main は max-w-3xl のまま。等幅 3 列 + md:text-6xl は物理的に収まらない
+
+plan:
+  steps:
+    - FeedbackEntry を native dialog + showModal/close 同期に切替。onCancel/閉じる/backdrop
+    - ResultView ヒーローを sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] + h1 w-fit mx-auto whitespace-nowrap
+    - tests/feedback-entry.test.tsx で開閉（Esc/Close/backdrop）と fail-closed
+    - quality-gate + ブラウザ検証
+  risks:
+    - jsdom の HTMLDialogElement.showModal が薄い → stub が必要
+    - ローカルに Feedback env が無いとブラウザで #7 を触れない → テストを主証拠
+
+assignment:
+  agent: implementer
+  lane: write-1
+  worktree: null
+
+owned_paths:
+  - components/FeedbackEntry.tsx
+  - components/ResultView.tsx
+  - tests/feedback-entry.test.tsx
+  - .ai/evidence/RT-QA-ISSUES-quality-gate.md
+  - .ai/evidence/RT-QA-ISSUES.md
+
+required_evidence:
+  - unit test (feedback-entry open/close)
+  - quality-gate or pnpm test+typecheck+check
+  - browser verification for #8 (390 / 640 / 768+)
+
+risk_tier: standard
+status: ready_for_push
+blocked_reason: null

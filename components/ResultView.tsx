@@ -81,7 +81,7 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
           <span className="font-mono">{formatTime(input.fromTimeSec, { forceHours: true })}</span> →{" "}
           {t.distances[input.toKey]}
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-4 text-center sm:grid-cols-3 sm:gap-4">
+        <div className="mt-4 grid grid-cols-1 gap-4 text-center sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-4">
           <div>
             <div className="text-[10px] font-semibold tracking-wide text-emerald-400/90 sm:text-xs">
               {t.result.optimistic}
@@ -94,7 +94,7 @@ export default function ResultView({ input, locale, pageUrl, showBackLink = true
             <div className="text-[10px] font-semibold tracking-wide text-(--color-victory)/90 sm:text-xs">
               {t.result.median}
             </div>
-            <h1 className="glow-pulse mt-1 bg-gradient-to-r from-(--color-accent) to-(--color-victory) bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl md:text-6xl">
+            <h1 className="glow-pulse mx-auto mt-1 w-fit whitespace-nowrap bg-gradient-to-r from-(--color-accent) to-(--color-victory) bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl md:text-6xl">
               {formatTime(consensus, { forceHours: true })}
             </h1>
           </div>
