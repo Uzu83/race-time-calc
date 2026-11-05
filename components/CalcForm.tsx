@@ -25,11 +25,17 @@ export default function CalcForm() {
     setTimeInput(formatTime(fromTimeSec, { forceHours: true }));
   }, [fromTimeSec]);
 
+  const parsedInputSec = parseTimeString(timeInput);
+  const readoutSec =
+    parsedInputSec !== null && parsedInputSec > 0 && parsedInputSec <= 24 * 3600
+      ? parsedInputSec
+      : null;
+
   const inferredPace = useMemo(() => {
     const meters = DISTANCES[fromKey];
-    if (!meters || fromTimeSec <= 0) return null;
-    return paceSecondsPerKmToString(fromTimeSec / (meters / 1000));
-  }, [fromKey, fromTimeSec]);
+    if (!meters || readoutSec === null) return null;
+    return paceSecondsPerKmToString(readoutSec / (meters / 1000));
+  }, [fromKey, readoutSec]);
 
   const livePreview = useMemo(() => {
     if (fromKey === toKey || fromTimeSec <= 0) return null;
@@ -67,7 +73,7 @@ export default function CalcForm() {
     router.push(`/result/${hash}`);
   }
 
-  const { h, m, s } = secondsToHMS(fromTimeSec);
+  const readout = readoutSec === null ? null : secondsToHMS(readoutSec);
 
   return (
     <form
@@ -110,16 +116,23 @@ export default function CalcForm() {
           placeholder={t.form.timePlaceholder}
           className="w-full rounded-lg border border-white/15 bg-(--color-bg-soft) px-4 py-3 font-mono text-2xl tracking-wider text-(--color-text) outline-none focus:border-(--color-accent)"
         />
-        <div className="flex items-center justify-between text-xs text-(--color-text-muted)">
-          <span>
-            {h}h {m}m {s.toString().padStart(2, "0")}s
-          </span>
-          {inferredPace && (
+        {readout && (
+          <div className="flex items-center justify-between text-xs text-(--color-text-muted)">
             <span>
-              {t.form.pace} {inferredPace}
+              {readout.h}h {readout.m}m {readout.s.toString().padStart(2, "0")}s
             </span>
-          )}
-        </div>
+            {inferredPace && (
+              <span>
+                {t.form.pace} {inferredPace}
+              </span>
+            )}
+          </div>
+        )}
+        {error && (
+          <p className="rounded border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+            {error}
+          </p>
+        )}
       </div>
 
       <fieldset className="space-y-2">
@@ -153,12 +166,6 @@ export default function CalcForm() {
             {formatTime(livePreview, { forceHours: livePreview >= 3600 })}
           </span>
         </div>
-      )}
-
-      {error && (
-        <p className="rounded border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300">
-          {error}
-        </p>
       )}
 
       <button
