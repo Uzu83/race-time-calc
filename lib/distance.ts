@@ -38,6 +38,13 @@ export function metersOf(key: DistanceKey): number {
   return DISTANCES[key];
 }
 
+/** 現在距離と目標が同じになったとき、予測できる目標へずらす。初回の 5K はフル（#10）。 */
+export function targetAfterFromChange(from: DistanceKey, to: DistanceKey): DistanceKey {
+  if (from !== to) return to;
+  if (from !== "full") return "full";
+  return "half";
+}
+
 export function paceSecondsPerKm(distanceMeters: number, totalSeconds: number): number {
   if (distanceMeters <= 0 || totalSeconds <= 0) return 0;
   return totalSeconds / (distanceMeters / 1000);

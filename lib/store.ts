@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { DistanceKey } from "./distance";
+import { type DistanceKey, targetAfterFromChange } from "./distance";
 
 interface CalcState {
   fromKey: DistanceKey;
@@ -19,7 +19,7 @@ export const useCalcStore = create<CalcState>()(
       fromKey: "10k",
       fromTimeSec: 50 * 60,
       toKey: "full",
-      setFromKey: (k) => set({ fromKey: k }),
+      setFromKey: (k) => set((s) => ({ fromKey: k, toKey: targetAfterFromChange(k, s.toKey) })),
       setFromTimeSec: (s) => set({ fromTimeSec: s }),
       setToKey: (k) => set({ toKey: k }),
     }),
