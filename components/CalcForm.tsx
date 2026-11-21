@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DISTANCES, type DistanceKey, paceSecondsPerKmToString } from "@/lib/distance";
 import { encodeInput } from "@/lib/encoding";
 import { useI18n } from "@/lib/i18n/Provider";
@@ -20,8 +20,13 @@ export default function CalcForm() {
     formatTime(fromTimeSec, { forceHours: true }),
   );
   const [error, setError] = useState<string | null>(null);
+  const timeFieldFocused = useRef(false);
 
+  // A partial entry such as "0:5" already parses. Rewriting it to "0:00:05"
+  // while the field is focused makes the next key append, so "0:50:00"
+  // becomes "0:00:50:00". Sync from the store only when the user is not editing.
   useEffect(() => {
+    if (timeFieldFocused.current) return;
     setTimeInput(formatTime(fromTimeSec, { forceHours: true }));
   }, [fromTimeSec]);
 
@@ -112,6 +117,12 @@ export default function CalcForm() {
           inputMode="numeric"
           autoComplete="off"
           value={timeInput}
+          onFocus={() => {
+            timeFieldFocused.current = true;
+          }}
+          onBlur={() => {
+            timeFieldFocused.current = false;
+          }}
           onChange={(e) => applyTimeInput(e.target.value)}
           placeholder={t.form.timePlaceholder}
           className="w-full rounded-lg border border-white/15 bg-(--color-bg-soft) px-4 py-3 font-mono text-2xl tracking-wider text-(--color-text) outline-none focus:border-(--color-accent)"
